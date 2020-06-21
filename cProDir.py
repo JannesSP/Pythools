@@ -114,7 +114,7 @@ datalink = args.link
 ext = args.docext
 mlbool = args.machine_learning
 user = getpass.getuser()
-time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+time = datetime.now().strftime("%Y.%m.%d %H:%M:%S")
 
 # create often used variables
 cwd = os.getcwd()
@@ -142,7 +142,7 @@ for dire in project_dirs:
     log(f'Created {pwd + dire}')
     if dire != 'out/plots' and dire != 'doc':
         readmes[dire] = pwd + dire + '/README.md'
-        write(f'# Created markdown file for {dire} on {time} from {user}.', readmes[dire])
+        write(f'Created markdown file for {dire} on {time} from {user}.', readmes[dire])
         log(f'Created {readmes[dire]}')
 
 
