@@ -6,6 +6,11 @@ Jannes Spangenberg<br>
 Studying bioinformatics at Friedrich-Schiller-University in Jena Germany<br>
 
 # cProDir
+cProDir can be used to create your project directory structure for better navigation and reproducibility in your projects.
+This way uniformity is insured thoughout all your projects.
+You have the possibility to link your resource data or to use a precreated empty git remote repository to add a version control to your project.
+
+## Usage
 <pre>
 usage: cProDir.py [-h] (-p PROJECT_NAME | -g GIT_URL) [-d EXTENSION] [-l PATH]
                   [-ml TRAINDATA VALDATA] [-v]
@@ -34,3 +39,14 @@ optional arguments:
 
 You are currently using version 0.3!
 </pre>
+
+## Your project directory structure:
+-   src: containing project scripts
+-   res: containing project resources and data
+-   bin: containing project binaries
+-   lib: containing external libraries
+-   doc: containing project documentation files
+-   build: containing project binaries
+-   temp: containing temporary files
+-   out: containing output files, produced by processing/analyzing resources
+-   out/plots: containing output plot files and diagrams

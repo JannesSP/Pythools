@@ -1,6 +1,7 @@
-# Project ml_project created on 2020.06.22 01:09:57 from jannes.
+# Project ml_project created on 2020.06.22 01:35:07 from jannes.
+-    Using git https://github.com/JannesSP/ml_project for version control on account JannesSP on github.com.
 -    Created with cProDir version 0.3.
--    Project ml_project created on 2020.06.22 01:09:57 from jannes.
+-    Project ml_project created on 2020.06.22 01:35:07 from jannes.
 
 # ml_project directory structure:
 -   src: containing project scripts
@@ -15,14 +16,12 @@
 
 # Data to be analyzed:
 Resources/Data linked from<br>
-/home/jannes/sciProTools/ml_data/traindata<br>
-``|--> /res/traindata/rep1``<br>
-``|---|--> /res/traindata/rep1/traindata.csv..................256.0 Byte``<br>
-Linked traindata: 1 files in 2 folders with a total datasize of 256.0 Byte.<br>
-
-Resources/Data linked from<br>
-/home/jannes/sciProTools/ml_data/valdata<br>
-``|--> /res/valdata/valset1``<br>
-``|---|--> /res/valdata/valset1/valset1.......................344.0 Byte``<br>
-Linked validationdata: 1 files in 2 folders with a total datasize of 344.0 Byte.<br>
-
+/home/jannes/sciProTools/link_data<br>
+``|--> /res/testdata.csv......................................0.0 Byte``<br>
+``|--> /res/testdata.md.......................................0.0 Byte``<br>
+``|--> /res/testdata.txt......................................98.8477 KB``<br>
+``|--> /res/folder1_1``<br>
+``|---|--> /res/folder1_1/file1_1.............................0.0 Byte``<br>
+``|---|--> /res/folder1_1/folder2_1``<br>
+``|---|---|--> /res/folder1_1/folder2_1/file2_1...............0.0 Byte``<br>
+Linked 5 files in 3 folders with a total datasize of 98.8477 KB.

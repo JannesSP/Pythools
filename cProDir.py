@@ -10,7 +10,7 @@ import copy
 import git
 from datetime import datetime
 
-version = 0.3
+version = 0.3.1
 
 ### FUNCTIONS
 
@@ -100,9 +100,11 @@ parser = ap.ArgumentParser(
 )
 
 # required arguments
-group = parser.add_mutually_exclusive_group(required=True, )
-group.add_argument('-p', '--project', metavar='PROJECT_NAME', default=None, type=str, help='Name of the project you want to create locally.')
-group.add_argument('-g', '--git', metavar='GIT_URL', type=str, default=None, help='Use this argument if you already made an empty repository and want to add your project to the remote repository.')
+projectgroup = parser.add_mutually_exclusive_group(required=True, )
+projectgroup.add_argument('-p', '--project', metavar='PROJECT_NAME', default=None, type=str, help='Name of the project you want to create locally.')
+gitgroup = projectgroup.add_mutually_exclusive_group(required=False)
+gitgroup.add_argument('-g', '--git', metavar='GIT_URL', type=str, default=None, help='Use this argument if you already made an empty repository and want to add your project to the remote repository.')
+gitgroup.add_argument('-i', '--gitignore', metavar='LIST_FILES', action='append', default=None, help='List of directories or files that should be ignored in git version control.')
 
 # optional arguments
 parser.add_argument('-d', '--docext', metavar='EXTENSION', default='md', type=str, help='DOCumentation datatype EXTension for your documentation files. Standard is md for markdown.')
@@ -127,6 +129,9 @@ if args.git is not None:
     git_service = giturl.split('/')[-3]
     projectInput['git'] = True
     log(f'Using git {giturl} for version control!')
+    gitignore = '.gitignore'
+    for f in args.gitignore:
+        write(f, gitignore)
 
 datalink = args.link
 ext = args.docext
@@ -178,6 +183,8 @@ for dire in project_dirs:
         readmes[dire] = pwd + dire + '/README.md'
         write(f'Created markdown file for {dire} on {time} from {user}.', readmes[dire])
         log(f'Created {readmes[dire]}')
+
+write(f'res contains the resource data the way you like, either the hard links to your resource data or the actual resource data files.', readmes['res'])
 
 
 ### CREATE PROJECT FILES
