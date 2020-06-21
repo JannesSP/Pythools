@@ -28,16 +28,13 @@ def write(string, filepath):
         w.write(string + '\n')
     w.close()
 
-def linkAllFiles(walkpath, dst, depth=0, tabsize=0):
+def linkAllFiles(walkpath, dst, depth=0):
     # check and edit input path strings
-    tab = '\t'
+    tab = '|---'
     if dst[-1] != '/' and dst != '':
         dst+='/'
     if walkpath[-1] != '/':
         walkpath+='/'
-
-    tabsize += math.ceil(len(walkpath.split("/")[-2])/8)
-    sepFileSize = tab*(10-tabsize)
 
     # make sure directory exists
     if not os.path.exists(dst):
@@ -50,12 +47,15 @@ def linkAllFiles(walkpath, dst, depth=0, tabsize=0):
         os.link(src=walkpath + linkfile, dst=linkdst)
 
         # write readme and log
-        write(f'{tab*depth}| --> {linkdst.split(project_name)[-1]}{sepFileSize}{humanbytes(os.path.getsize(linkdst))}<br>', readmefile)
+        points = '.' * (100-len(f'{tab*depth}|--> {linkdst.split(project_name)[-1]}'))
+
+        write(f'{tab*depth}|--> {linkdst.split(project_name)[-1]}{points}{humanbytes(os.path.getsize(linkdst))}<br>', readmefile)
         log(f'Linked {walkpath + linkfile} to {dst + linkfile}')
     
     # walk directories
     for linkdir in entry[1]:
-        linkAllFiles(walkpath=walkpath + linkdir + '/', dst=dst + linkdir + '/', depth=depth + 1, tabsize=tabsize + 1)
+        write(f'{tab*depth}|--> {linkdst.split(project_name)[-1]}{linkdir}<br>', readmefile)
+        linkAllFiles(walkpath=walkpath + linkdir + '/', dst=dst + linkdir + '/', depth=depth + 1)
 
 # https://stackoverflow.com/questions/12523586/python-format-size-application-converting-b-to-kb-mb-gb-tb
 def humanbytes(B):
@@ -181,27 +181,8 @@ if datalink is None and mlbool:
 # linking data
 elif datalink is not None:
     write('\n# Data to be analyzed:', readmefile)
-    write(f'Resources/Data linked from\n{os.path.abspath(datalink)}', readmefile)
+    write(f'Resources/Data linked from<br>\n{os.path.abspath(datalink)}<br>', readmefile)
     linkAllFiles(walkpath=datalink, dst=pwd+'res/')
     log('Done linking resources/data.')
-
-    # entry1 = next(os.walk(datalink))
-        
-    # # write files from level 1 in readmefile
-    # for res_file in entry1[2]:
-    #     write(f'| --> {res_file}', readmefile)
-
-    # # look into resource directories level 1
-    # for res_dir1 in entry1[1]:
-    #     write(f'| --> {res_dir1}/', readmefile)
-    #     entry2 = next(os.walk(datalink + res_dir1))
-
-    #     # write files from level 2 in readmefile
-    #     for res_file in entry2[2]:
-    #         write(f'      | --> {res_file}     {os.path.getsize(res_dir1 + res_file)}', readmefile)
-
-    #     # look into resource directories level 2
-    #     for res_dir2 in entry2[1]:
-    #         write(f'      | --> {res_dir2}/', readmefile)
 
 log(f'Created {readmefile}')
