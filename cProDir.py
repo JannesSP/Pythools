@@ -10,7 +10,7 @@ import copy
 import git
 from datetime import datetime
 
-version = 0.3.1
+version = '0.3.1'
 
 ### FUNCTIONS
 
@@ -102,14 +102,13 @@ parser = ap.ArgumentParser(
 # required arguments
 projectgroup = parser.add_mutually_exclusive_group(required=True, )
 projectgroup.add_argument('-p', '--project', metavar='PROJECT_NAME', default=None, type=str, help='Name of the project you want to create locally.')
-gitgroup = projectgroup.add_mutually_exclusive_group(required=False)
-gitgroup.add_argument('-g', '--git', metavar='GIT_URL', type=str, default=None, help='Use this argument if you already made an empty repository and want to add your project to the remote repository.')
-gitgroup.add_argument('-i', '--gitignore', metavar='LIST_FILES', action='append', default=None, help='List of directories or files that should be ignored in git version control.')
+projectgroup.add_argument('-g', '--git', metavar='GIT_URL', type=str, default=None, help='Use this argument if you already made an empty repository and want to add your project to the remote repository.')
 
 # optional arguments
 parser.add_argument('-d', '--docext', metavar='EXTENSION', default='md', type=str, help='DOCumentation datatype EXTension for your documentation files. Standard is md for markdown.')
 parser.add_argument('-l', '--link', metavar='PATH', type=str, default=None, help='Path of the folder of your resources/data.\nThe linked resources or data can be found in ./<project>/res/.')
 parser.add_argument('-ml', '--machine_learning', nargs=2, metavar=('TRAINDATA', 'VALDATA'), type=str, default=(None, None), help='Path to traindata and path to validationsdata.\nData gets linked into ./<project>/res/ folder.')
+parser.add_argument('-i', '--gitignore', metavar='LIST_FILES', action='append', default=None, help='List of directories or files that should be ignored in git version control.\nOnly possible if -g is used!')
 
 parser.add_argument('-v', '--version', action='version', version=f'\n%(prog)s {version}')
 
@@ -155,6 +154,9 @@ if datalink is not None and not os.path.exists(datalink):
 
 if datalink is not None and (trainlink is not None or validationslink is not None):
     error(f'Cannot use --link and --machine_learning together! Please choose only one of them!', 3)
+
+if args.gitignore is not None and args.git is None:
+    error(f'Can use --gitignore only if --git is used!', 4)
 
 if projectInput['git']:
     repo = git.Repo.clone_from(giturl, pwd)
