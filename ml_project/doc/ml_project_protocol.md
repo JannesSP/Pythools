@@ -1,6 +1,8 @@
-# Project ml_project created on 2020.06.22 01:09:57 from jannes.
--    Created with cProDir version 0.3.
--    Project ml_project created on 2020.06.22 01:09:57 from jannes.
+# Project ml_project: md documentation file of ml_project.
+ml_project created by jannes on 2020.06.22 01:09:57.
+Used command for creation is:
+cProDir.py-pml_project-mlml_data/traindata/ml_data/valdata/
+# Created with cProDir version 0.3.
 
 # ml_project directory structure:
 -   src: containing project scripts
@@ -16,13 +18,9 @@
 # Data to be analyzed:
 Resources/Data linked from<br>
 /home/jannes/sciProTools/ml_data/traindata<br>
-``|--> /res/traindata/rep1``<br>
-``|---|--> /res/traindata/rep1/traindata.csv..................256.0 Byte``<br>
 Linked traindata: 1 files in 2 folders with a total datasize of 256.0 Byte.<br>
 
 Resources/Data linked from<br>
 /home/jannes/sciProTools/ml_data/valdata<br>
-``|--> /res/valdata/valset1``<br>
-``|---|--> /res/valdata/valset1/valset1.......................344.0 Byte``<br>
 Linked validationdata: 1 files in 2 folders with a total datasize of 344.0 Byte.<br>
 
