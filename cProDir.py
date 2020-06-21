@@ -8,11 +8,9 @@ import getpass
 import math
 from datetime import datetime
 
-#import ArgumentParser, ArgumentDefaultsHelpFormatter
-
 version = 0.1
 
-# FUNCTIONS
+### FUNCTIONS
 
 def error(string, error_type=1):
     sys.stderr.write(f'ERROR: {string}\n')
@@ -23,12 +21,20 @@ def log(string, newline_before=False):
         sys.stderr.write('\n')
     sys.stderr.write(f'LOG: {string}\n')
 
-def write(string, filepath):
-    with open(filepath, 'a+') as w:
+def write(string, filepath1, filepath2=None):
+    with open(filepath1, 'a+') as w:
         w.write(string + '\n')
     w.close()
+    if filepath2 is not None:
+        with open(filepath2, 'a+') as w:
+            w.write(string + '\n')
+        w.close()
 
 def linkAllFiles(walkpath, dst, depth=0):
+    files = 0
+    folders = 1
+    foldersize = 0
+
     # check and edit input path strings
     tab = '|---'
     if dst[-1] != '/' and dst != '':
@@ -48,14 +54,18 @@ def linkAllFiles(walkpath, dst, depth=0):
 
         # write readme and log
         points = '.' * (60-len(f'{tab*depth}|--> {linkdst.split(project_name)[-1]}'))
-
-        write(f'``{tab*depth}|--> {linkdst.split(project_name)[-1]}{points}{humanbytes(os.path.getsize(linkdst))}``<br>', readmefile)
+        filesize = os.path.getsize(linkdst)
+        write(f'``{tab*depth}|--> {linkdst.split(project_name)[-1]}{points}{humanbytes(filesize)}``<br>', readmemd)
         log(f'Linked {walkpath + linkfile} to {dst + linkfile}')
-    
+        files += 1
+        foldersize += filesize
+
     # walk directories
     for linkdir in entry[1]:
-        write(f'``{tab*depth}|--> {dst.split(project_name)[-1]}{linkdir}``<br>', readmefile)
-        linkAllFiles(walkpath=walkpath + linkdir + '/', dst=dst + linkdir + '/', depth=depth + 1)
+        write(f'``{tab*depth}|--> {dst.split(project_name)[-1]}{linkdir}``<br>', readmemd)
+        return tuple(map(sum, zip((files, folders, foldersize), linkAllFiles(walkpath=walkpath + linkdir + '/', dst=dst + linkdir + '/', depth=depth + 1))))
+
+    return (files, folders, foldersize)
 
 # https://stackoverflow.com/questions/12523586/python-format-size-application-converting-b-to-kb-mb-gb-tb
 def humanbytes(B):
@@ -78,7 +88,7 @@ def humanbytes(B):
         return '{0:.4f} TB'.format(B/TB)
 
 
-# PARAMS
+### PARAMS
 
 parser = ap.ArgumentParser(
     description='cProDir.py helps you with creating your working directory to your wishes and desires.',
@@ -97,79 +107,66 @@ parser.add_argument('-ml', '--machine_learning', type=bool, default=False, help=
 
 args = parser.parse_args()
 
-# CHECK INPUT
+### CHECK INPUT
 
 project_name = args.project
 datalink = args.link
 ext = args.docext
 mlbool = args.machine_learning
 user = getpass.getuser()
-
-# time
-now = datetime.now()
-current_time = now.strftime("%Y-%m-%d_%H-%M-%S")
+time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
 # create often used variables
 cwd = os.getcwd()
 pwd = cwd + '/' + project_name + '/'
 
-# CREATE PROJECT DIRECTORY
+### CREATE PROJECT DIRECTORY
 
 # creating project working directory 'pwd'
 if os.path.exists(pwd):
     error(f'Path {pwd} already exists!\nStopped with error code 1!', 1)
 
 os.makedirs(pwd)
-readmefile = pwd + 'README.md'
+readmemd = pwd + 'README.md'
+readmesh = pwd + 'README.sh'
 log(f'Created project {project_name} directory in {pwd}')
 
-os.makedirs(pwd + 'src/')
-log(f'Created {pwd}src/')
+# making directories
+readmes = {}
+project_dirs = ['src', 'res', 'bin', 'lib', 'doc', 'build', 'out', 'out/plots', 'temp']
+for dire in project_dirs:
+    os.makedirs(pwd + dire)
+    log(f'Created {pwd + dire}')
+    if dire != 'out/plots' and dire != 'doc':
+        readmes[dire] = pwd + dire + '/README.md'
+        write(f'# Created markdown file for {dire} on {time} from {user}.', readmes[dire])
+        log(f'Created {readmes[dire]}')
 
-os.makedirs(pwd + 'res/')
-log(f'Created {pwd}res/')
 
-os.makedirs(pwd + 'bin/')
-log(f'Created {pwd}bin/')
-
-os.makedirs(pwd + 'lib/')
-log(f'Created {pwd}lib/')
-
-os.makedirs(pwd + 'doc/')
-docfile = pwd + f'doc/{project_name}.{ext}'
-log(f'Created {pwd}doc/')
-
-os.makedirs(pwd + 'build/')
-log(f'Created {pwd}build/')
-
-os.makedirs(pwd + 'out/')
-os.makedirs(pwd + 'out/plots/')
-log(f'Created {pwd}out/')
-log(f'Created {pwd}out/plots/')
-
-os.makedirs(pwd + 'temp/')
-log(f'Created {pwd}temp/')
-
-# CREATE PROJECT FILES
+### CREATE PROJECT FILES
 
 # creating documentation file
-write(f'# Markdown documentation file of {project_name}.', docfile)
+docfile = pwd + f'doc/{project_name}.{ext}'
+write(f'# Project {project_name}: {ext} documentation file of {project_name}.', docfile)
+write(f'{project_name} created by {user} on {time}.', docfile)
 log(f'Created {docfile}')
 
-# writing readme file
-write(f'# Project {project_name}', readmefile)
-write(f'-    Created with cProDir version {version}.', readmefile)
-write(f'-    Project {project_name} created on {current_time} from {user}.', readmefile)
-write(f'\n# {project_name} directory structure:', readmefile)
-write('-   src: containing project scripts', readmefile)
-write('-   res: containing project resources and data', readmefile)
-write('-   bin: containing project binaries', readmefile)
-write('-   lib: containing external libraries', readmefile)
-write('-   doc: containing project documentation files', readmefile)
-write('-   build: containing project binaries', readmefile)
-write('-   temp: containing temporary files', readmefile)
-write('-   out: containing output files, produced by processing/analyzing resources', readmefile)
-write('-   out/plots: containing output plot files and diagrams', readmefile)
+# writing major readme file
+write(f'# Project {project_name}', readmemd, readmesh)
+write(f'# Created with cProDir version {version}.', readmesh)
+write(f'# Project {project_name} created on {time} from {user}.', readmesh)
+write(f'-    Created with cProDir version {version}.', readmemd)
+write(f'-    Project {project_name} created on {time} from {user}.', readmemd)
+write(f'\n# {project_name} directory structure:', readmemd)
+write('-   src: containing project scripts', readmemd)
+write('-   res: containing project resources and data', readmemd)
+write('-   bin: containing project binaries', readmemd)
+write('-   lib: containing external libraries', readmemd)
+write('-   doc: containing project documentation files', readmemd)
+write('-   build: containing project binaries', readmemd)
+write('-   temp: containing temporary files', readmemd)
+write('-   out: containing output files, produced by processing/analyzing resources', readmemd)
+write('-   out/plots: containing output plot files and diagrams', readmemd)
 
 # if no datalink provided create train and validate data folders
 if datalink is None and mlbool:
@@ -180,9 +177,12 @@ if datalink is None and mlbool:
 
 # linking data
 elif datalink is not None:
-    write('\n# Data to be analyzed:', readmefile)
-    write(f'Resources/Data linked from<br>\n{os.path.abspath(datalink)}<br>', readmefile)
-    linkAllFiles(walkpath=datalink, dst=pwd+'res/')
+    write('\n# Data to be analyzed:', readmemd)
+    write(f'Resources/Data linked from<br>\n{os.path.abspath(datalink)}<br>', readmemd)
+    (files, folders, datasize) = linkAllFiles(walkpath=datalink, dst=pwd+'res/')
+    log(f'Linked {files} files in {folders} folders.')
+    write(f'Linked {files} files in {folders} folders with a total datasize of {humanbytes(datasize)}.', readmemd)
+    log(f'Linked data of size {humanbytes(datasize)}')
     log('Done linking resources/data.')
 
-log(f'Created {readmefile}')
+log(f'Created {readmemd} and {readmesh}')
