@@ -91,7 +91,7 @@ def humanbytes(B):
 ### PARAMS
 
 parser = ap.ArgumentParser(
-    description='cProDir.py helps you with creating your working directory to your wishes and desires.',
+    description='cProDir.py helps you with Creating your PROject DIRectory with good structure for better navigation and reproducibility.',
     formatter_class=ap.HelpFormatter,
     epilog=f'You are currently using version {version}!'
 )

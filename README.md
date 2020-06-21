@@ -1,4 +1,4 @@
-# Pythools
+# sciProTools
 Usefule python scripts for everyday science projects.
 
 # Creator
@@ -9,7 +9,7 @@ Studying bioinformatics at Friedrich-Schiller-University in Jena Germany<br>
 <pre>
 usage: cProDir.py [-h] [-d EXTENSION] [-l PATH] [-v] [-ml MACHINE_LEARNING] project
 
-cProDir.py helps you with creating your working directory to your wishes and desires.
+cProDir.py helps you with Creating your PROject DIRectory with good structure for better navigation and reproducibility.
 
 positional arguments:
     project
@@ -26,5 +26,5 @@ optional arguments:
                             Data gets linked into ./<project>/res/ folder.
     -v, --version           show program's version number and exit
 
-You are currently using version 0.1!
+You are currently using version 0.2!
 </pre>
