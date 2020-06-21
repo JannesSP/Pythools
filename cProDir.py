@@ -8,7 +8,7 @@ import getpass
 import math
 from datetime import datetime
 
-version = 0.1
+version = 0.2
 
 ### FUNCTIONS
 
@@ -100,10 +100,11 @@ parser = ap.ArgumentParser(
 parser.add_argument('project', metavar='project', type=str)
 
 # optional arguments
-parser.add_argument('-d', '--docext', metavar='EXTENSION', default='md', type=str, help='DOCumentation datatype EXTension for your documentation files. Standard is md for markdown.\n')
+parser.add_argument('-d', '--docext', metavar='EXTENSION', default='md', type=str, help='DOCumentation datatype EXTension for your documentation files. Standard is md for markdown.')
 parser.add_argument('-l', '--link', metavar='PATH', type=str, default=None, help='Path of the folder of your resources/data.\nThe linked resources or data can be found in ./<project>/res/.')
-parser.add_argument('-v', '--version', action='version', version=f'%(prog)s {version}')
-parser.add_argument('-ml', '--machine_learning', type=bool, default=False, help='')
+parser.add_argument('-ml', '--machine_learning', nargs=2, metavar=('traindata', 'validationdata'), type=str, default=(None, None), help='Path to traindata and path to validationsdata.\nData gets linked into ./<project>/res/ folder.')
+
+parser.add_argument('-v', '--version', action='version', version=f'\n%(prog)s {version}')
 
 args = parser.parse_args()
 
@@ -112,7 +113,8 @@ args = parser.parse_args()
 project_name = args.project
 datalink = args.link
 ext = args.docext
-mlbool = args.machine_learning
+trainlink = args.machine_learning[0]
+validationslink = args.machine_learning[1]
 user = getpass.getuser()
 time = datetime.now().strftime("%Y.%m.%d %H:%M:%S")
 
@@ -126,8 +128,11 @@ pwd = cwd + '/' + project_name + '/'
 if os.path.exists(pwd):
     error(f'Path {pwd} already exists!\nStopped with error code 1!', 1)
 
-if not os.path.exists(datalink):
+if datalink is not None and not os.path.exists(datalink):
     error(f'Path {datalink} does not exist!\nStopped with error code 2!', 2)
+
+if datalink is not None and (trainlink is not None or validationslink is not None):
+    error(f'Cannot use --link and --machine_learning together! Please choose only one of them!', 3)
 
 os.makedirs(pwd)
 readmemd = pwd + 'README.md'
@@ -172,11 +177,26 @@ write('-   out: containing output files, produced by processing/analyzing resour
 write('-   out/plots: containing output plot files and diagrams', readmemd)
 
 # if no datalink provided create train and validate data folders
-if datalink is None and mlbool:
+if trainlink is not None or validationslink is not None:
     os.makedirs(pwd + 'res/traindata/')
     log(f'Created {pwd}res/traindata/')
     os.makedirs(pwd + 'res/valdata/')
     log(f'Created {pwd}res/valdata/')
+    write('\n# Data to be analyzed:', readmemd)
+    
+    if trainlink is not None:
+        write(f'Resources/Data linked from<br>\n{os.path.abspath(trainlink)}<br>', readmemd)
+        (files, folders, datasize) = linkAllFiles(walkpath=trainlink, dst=pwd+'res/traindata/')
+        log(f'Linked traindata: {files} files in {folders} folders.')
+        log(f'Linked traindata of size {humanbytes(datasize)}')
+        write(f'Linked traindata: {files} files in {folders} folders with a total datasize of {humanbytes(datasize)}.', readmemd)
+
+    if validationslink is not None:
+        write(f'Resources/Data linked from<br>\n{os.path.abspath(validationslink)}<br>', readmemd)
+        (files, folders, datasize) = linkAllFiles(walkpath=validationslink, dst=pwd+'res/valdata/')
+        log(f'Linked validationdata: {files} files in {folders} folders.')
+        log(f'Linked validationdata of size {humanbytes(datasize)}')
+        write(f'Linked validationdata: {files} files in {folders} folders with a total datasize of {humanbytes(datasize)}.', readmemd)
 
 # linking data
 elif datalink is not None:
