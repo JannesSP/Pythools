@@ -126,6 +126,9 @@ pwd = cwd + '/' + project_name + '/'
 if os.path.exists(pwd):
     error(f'Path {pwd} already exists!\nStopped with error code 1!', 1)
 
+if not os.path.exists(datalink):
+    error(f'Path {datalink} does not exist!\nStopped with error code 2!', 2)
+
 os.makedirs(pwd)
 readmemd = pwd + 'README.md'
 readmesh = pwd + 'README.sh'
