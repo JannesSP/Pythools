@@ -54,7 +54,7 @@ def linkAllFiles(walkpath, dst, depth=0):
     
     # walk directories
     for linkdir in entry[1]:
-        write(f'``{tab*depth}|--> {linkdst.split(project_name)[-1]}{linkdir}``<br>', readmefile)
+        write(f'``{tab*depth}|--> {dst.split(project_name)[-1]}{linkdir}``<br>', readmefile)
         linkAllFiles(walkpath=walkpath + linkdir + '/', dst=dst + linkdir + '/', depth=depth + 1)
 
 # https://stackoverflow.com/questions/12523586/python-format-size-application-converting-b-to-kb-mb-gb-tb
