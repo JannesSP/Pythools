@@ -1,6 +1,6 @@
 # Project testproject
 -    Created with cProDir version 0.1.
--    Project testproject created on 2020-06-21_19-22-02 from jannes.
+-    Project testproject created on 2020-06-21_19-23-14 from jannes.
 
 # testproject directory structure:
 -   src: containing project scripts
@@ -19,8 +19,8 @@ Resources/Data linked from<br>
 ``|--> /res/testdata.csv......................................0.0 Byte``<br>
 ``|--> /res/testdata.md.......................................0.0 Byte``<br>
 ``|--> /res/testdata.txt......................................98.8477 KB``<br>
-``|--> /res/testdata.txtfolder1_1``
+``|--> /res/testdata.txtfolder1_1``<br>
 ``|---|--> /res/folder1_1/file1_1.............................0.0 Byte``<br>
-``|---|--> /res/folder1_1/file1_1folder2_1``
+``|---|--> /res/folder1_1/file1_1folder2_1``<br>
 ``|---|---|--> /res/folder1_1/folder2_1/file2_1...............0.0 Byte``<br>
-``|--> /res/testdata.txtfolder1_2``
+``|--> /res/testdata.txtfolder1_2``<br>
