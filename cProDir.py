@@ -49,7 +49,7 @@ def linkAllFiles(walkpath, dst, depth=0):
         # write readme and log
         points = '.' * (60-len(f'{tab*depth}|--> {linkdst.split(project_name)[-1]}'))
 
-        write(f'``{tab*depth}|--> {linkdst.split(project_name)[-1]}{points}{humanbytes(os.path.getsize(linkdst))}``', readmefile)
+        write(f'``{tab*depth}|--> {linkdst.split(project_name)[-1]}{points}{humanbytes(os.path.getsize(linkdst))}``<br>', readmefile)
         log(f'Linked {walkpath + linkfile} to {dst + linkfile}')
     
     # walk directories
