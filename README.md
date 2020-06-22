@@ -43,6 +43,27 @@ optional arguments:
 You are currently using version 0.3.1!
 </pre>
 
+## Examples:
+
+### Using precreated empty github repository, hard link resource data (only accessible locally) and add gitignore paths
+<pre>
+python3 cProDir.py -g https://github.com/JannesSP/ml_project -ml ml_data/traindata ml_data/valdata -i 'res/*' -i '!res/README.md' -i '.gitignore'
+</pre>
+results: https://github.com/JannesSP/ml_project
+
+### Create project locally and hard link resource data
+<pre>
+python3 cProDir.py -p link_project -l link_data/
+</pre>
+https://github.com/JannesSP/sciProTools/tree/master/link_project
+
+### Create project for machine learnling
+<pre>
+python3 cProDir.py -p ml_project -ml ml_data/traindata ml_data/valdata
+</pre>
+
+
+
 ## Your project directory structure:
 -   src: containing project scripts
 -   res: containing project resources and data
