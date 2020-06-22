@@ -13,11 +13,11 @@ You have the possibility to link your resource data or to use a precreated empty
 ## Usage
 <pre>
 usage: cProDir.py [-h] (-p PROJECT_NAME | -g GIT_URL) [-d EXTENSION] [-l PATH]
-                  [-ml TRAINDATA VALDATA] [-v]
+                  [-ml TRAINDATA VALDATA] [-i LIST_FILES] [-v]
 
-Version 0.3 enables you to add your project to a precreated remote git repository - see param -g.
-cProDir.py helps you with Creating your PROject DIRectory with good structure
-for better navigation and reproducibility.
+Version 0.3 enables you to add your project to a precreated remote git
+repository - see param -g. cProDir.py helps you with Creating your PROject
+DIRectory with good structure for better navigation and reproducibility.
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -35,9 +35,12 @@ optional arguments:
   -ml TRAINDATA VALDATA, --machine_learning TRAINDATA VALDATA
                         Path to traindata and path to validationsdata. Data
                         gets linked into ./<project>/res/ folder.
+  -i LIST, --gitignore LIST
+                        List of directories or files that should be ignored in
+                        git version control. Only possible if -g is used!
   -v, --version         show program's version number and exit
 
-You are currently using version 0.3!
+You are currently using version 0.3.1!
 </pre>
 
 ## Your project directory structure:

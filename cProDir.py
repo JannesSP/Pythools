@@ -108,30 +108,11 @@ projectgroup.add_argument('-g', '--git', metavar='GIT_URL', type=str, default=No
 parser.add_argument('-d', '--docext', metavar='EXTENSION', default='md', type=str, help='DOCumentation datatype EXTension for your documentation files. Standard is md for markdown.')
 parser.add_argument('-l', '--link', metavar='PATH', type=str, default=None, help='Path of the folder of your resources/data.\nThe linked resources or data can be found in ./<project>/res/.')
 parser.add_argument('-ml', '--machine_learning', nargs=2, metavar=('TRAINDATA', 'VALDATA'), type=str, default=(None, None), help='Path to traindata and path to validationsdata.\nData gets linked into ./<project>/res/ folder.')
-parser.add_argument('-i', '--gitignore', metavar='LIST_FILES', action='append', default=None, help='List of directories or files that should be ignored in git version control.\nOnly possible if -g is used!')
+parser.add_argument('-i', '--gitignore', metavar='LIST', action='append', default=None, help='List of directories or files that should be ignored in git version control.\nOnly possible if -g is used!')
 
 parser.add_argument('-v', '--version', action='version', version=f'\n%(prog)s {version}')
 
 args = parser.parse_args()
-
-### CHECK INPUT
-projectInput = {'project': False, 'git': False}
-
-if args.project is not None:
-    project_name = args.project
-    projectInput['project'] = True
-
-if args.git is not None:
-    giturl = args.git
-    project_name = giturl.split('/')[-1]
-    git_user_name = giturl.split('/')[-2]
-    git_service = giturl.split('/')[-3]
-    projectInput['git'] = True
-    log(f'Using git {giturl} for version control!')
-    gitignore = '.gitignore'
-    for f in args.gitignore:
-        write(f, gitignore)
-
 datalink = args.link
 ext = args.docext
 trainlink = args.machine_learning[0]
@@ -141,7 +122,23 @@ time = datetime.now().strftime("%Y.%m.%d %H:%M:%S")
 
 # create often used variables
 cwd = os.getcwd()
-pwd = cwd + '/' + project_name + '/'
+
+### CHECK INPUT
+projectInput = {'project': False, 'git': False}
+
+if args.project is not None:
+    project_name = args.project
+    pwd = cwd + '/' + project_name + '/'
+    projectInput['project'] = True
+
+if args.git is not None:
+    giturl = args.git
+    project_name = giturl.split('/')[-1]
+    pwd = cwd + '/' + project_name + '/'
+    git_user_name = giturl.split('/')[-2]
+    git_service = giturl.split('/')[-3]
+    projectInput['git'] = True
+    log(f'Using git {giturl} for version control!')
 
 ### CREATE PROJECT DIRECTORY
 
@@ -163,6 +160,10 @@ if projectInput['git']:
 
 if projectInput['project']:
     os.makedirs(pwd)
+
+if projectInput['git']:
+    for f in args.gitignore:
+        write(f, pwd + '.gitignore')
 
 readmemd = pwd + 'README.md'
 readmesh = pwd + 'README.sh'
