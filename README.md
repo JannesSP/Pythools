@@ -61,8 +61,7 @@ https://github.com/JannesSP/sciProTools/tree/master/link_project
 <pre>
 python3 cProDir.py -p ml_project -ml ml_data/traindata ml_data/valdata
 </pre>
-
-
+https://github.com/JannesSP/sciProTools/tree/master/ml_project
 
 ## Your project directory structure:
 -   src: containing project scripts
