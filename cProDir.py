@@ -108,7 +108,7 @@ projectgroup.add_argument('-g', '--git', metavar='GIT_URL', type=str, default=No
 parser.add_argument('-d', '--docext', metavar='EXTENSION', default='md', type=str, help='DOCumentation datatype EXTension for your documentation files. Standard is md for markdown.')
 parser.add_argument('-l', '--link', metavar='PATH', type=str, default=None, help='Path of the folder of your resources/data.\nThe linked resources or data can be found in ./<project>/res/.')
 parser.add_argument('-ml', '--machine_learning', nargs=2, metavar=('TRAINDATA', 'VALDATA'), type=str, default=(None, None), help='Path to traindata and path to validationsdata.\nData gets linked into ./<project>/res/ folder.')
-parser.add_argument('-i', '--gitignore', metavar='LIST', action='append', default=None, help='List of directories or files that should be ignored in git version control.\nOnly possible if -g is used!')
+parser.add_argument('-i', '--gitignore', metavar='LIST', action='append', default=None, help='List of \'directories\' or \'files\' that should be ignored in git version control.\nOnly possible if -g is used!')
 
 parser.add_argument('-v', '--version', action='version', version=f'\n%(prog)s {version}')
 
