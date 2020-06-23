@@ -1,4 +1,4 @@
-[![GitHub Downloads](https://img.shields.io/github/downloads/JannesSP/sciProTools/total.svg?style=social&logo=github&label=Download)](https://github.com/JannesSP/sciProTools)
+[![GitHub Downloads](https://img.shields.io/github/downloads/JannesSP/sciProTools/total?label=download&logo=github&style=social)](https://github.com/JannesSP/sciProTools)
 
 # sciProTools
 SCIence PROject TOOLS contains usefule python scripts for everyday science projects.
