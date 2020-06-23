@@ -1,0 +1,188 @@
+\documentclass[11pt, a4paper]{scrreprt}
+
+%%% PACKAGES %%%
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman, english]{babel}
+\usepackage[top=20mm, bottom=25mm, left=30mm, right=30mm]{geometry}
+\usepackage{graphicx}
+\graphicspath{ {../out/plots} }
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{cite}
+\usepackage[font={small,sf}, labelfont=bf]{caption}
+\usepackage{listings}
+\usepackage{tocloft}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage[most,listings]{tcolorbox}
+\usepackage[onehalfspacing]{setspace}
+\usepackage{rotating}
+\usepackage[bottom]{footmisc}
+\usepackage{subfig}
+\usepackage{pdflscape}
+\usepackage{xcolor,colortbl}
+\usepackage{hhline}
+\usepackage{tabu,multirow}
+\usepackage{verbatim}
+\usepackage{siunitx}
+\usepackage{lineno}
+\usepackage{tabularx}
+\usepackage[printonlyused]{acronym}
+\usepackage[version=4]{mhchem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{dsfont}
+
+%%% SETTINGS %%%
+
+\numberwithin{equation}{section}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+\definecolor{dark-gray}{gray}{0.15}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\slshape \footnotesize \nouppercase \rightmark}
+\fancyhead[R]{}
+\fancyfoot[R]{\thepage}
+\renewcommand{\headrulewidth}{0.15pt}
+
+%%% listings = python %%%
+
+\usepackage{listings}
+% Python style for highlighting
+\newcommand\pythonstyle{\lstset{
+	language=Python,
+	basicstyle=\ttm,
+	otherkeywords={self},             % Add keywords here
+	keywordstyle=\ttb\color{deepblue},
+	emph={MyClass,__init__},          % Custom highlighting
+	emphstyle=\ttb\color{deepred},    % Custom highlighting style
+	stringstyle=\color{deepgreen},
+	frame=tb,                         % Any extra options here
+	showstringspaces=false            % 
+}}
+
+% Python environment
+\lstnewenvironment{python}[1][]
+{
+\pythonstyle
+\lstset{#1}
+}
+{}
+
+% Python for external files
+\newcommand\pythonexternal[2][]{{
+\pythonstyle
+\lstinputlisting[#1]{#2}}}
+
+% Python for inline
+\newcommand\pythoninline[1]{{\pythonstyle\lstinline!#1!}}
+
+\usepackage[colorlinks,
+pdfpagelabels,
+pdfstartview = FitH,
+bookmarksopen = true,
+bookmarksnumbered = true,
+linkcolor = black,
+plainpages = false,
+hypertexnames = false,
+citecolor = black,
+urlcolor=black] {hyperref}
+
+\renewcommand{\thesection}{\arabic{section}}
+
+\counterwithout{figure}{chapter}
+\counterwithout{table}{chapter}
+\captionsetup{labelsep=none, font={small, sf, singlespacing}}
+\captionsetup[subfigure]{labelformat=simple, font={small, sf, singlespacing}, labelsep=none}
+
+\newcommand{\listappendicesname}{Appendices}
+\newlistof{appendices}{apc}{\listappendicesname}
+\newcommand{\appendices}[1]{\addcontentsline{apc}{appendices}{#1}}
+
+\newcommand{\newappendix}[1]{{#1}\appendices{#1}}
+
+\renewcommand{\listfigurename}{blub}
+
+%%%%%%%%%%%%%%%%%%%% DOCUMENT %%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+	% title page
+	\thispagestyle{empty}
+	\input{title_page}
+
+	% abstract
+	\newpage
+	\input{abstract}
+	\addcontentsline{toc}{section}{\protect\numberline{}Abstract}
+	\fancyfoot[]{}
+
+	% table of contents
+	\newpage
+	\thispagestyle{fancy}
+	\tableofcontents
+	\thispagestyle{fancy}
+	\fancyfoot[]{}
+	\fancyhead[L]{\slshape \footnotesize \nouppercase}
+	\newpage
+
+	% list of figures
+	\listoffigures %Abbildungsverzeichnis
+	\thispagestyle{fancy}
+	\fancyfoot[]{}
+	\fancyhead[L]{\slshape \footnotesize \nouppercase}
+	\begingroup
+	\let\clearpage\relax
+
+	% list of tables
+	\listoftables
+	\thispagestyle{fancy}
+	\fancyfoot[]{}
+	\fancyhead[L]{\slshape \footnotesize \nouppercase}
+	\endgroup
+	
+	% abbreviations
+	\newpage
+	\input{abbreviations}
+	\newpage
+	\setcounter{page}{3}
+	\thispagestyle{fancy}
+	\fancyfoot[R]{\thepage}
+	\fancyhead[L]{\slshape \footnotesize \nouppercase \rightmark}
+
+	% introduction
+	\input{introduction}
+	\newpage
+
+	% materials_methods
+	\input{materials_methods}
+	\newpage
+
+	% results
+	\input{results}
+	\newpage
+
+	% discussion
+	\input{discussion}
+	\newpage
+	\thispagestyle{fancy}
+	\pagenumbering{Roman}
+	\fancyfoot[R]{\thepage}
+	\fancyhead[L]{\slshape \footnotesize \nouppercase Anhang}
+	\addcontentsline{toc}{section}{\protect\numberline{}Anhang}
+	
+	% attachments
+	\input{attachments}
+	\newpage
+	\thispagestyle{fancy}
+	\addcontentsline{toc}{section}{\protect\numberline{}Literaturverzeichnis}
+	\fancypagestyle{plain}{% 
+		\fancyhf{} % clear all header and footer fields 
+		\fancyhead[L]{\slshape \footnotesize \nouppercase \rightmark}
+		\fancyfoot[R]{\thepage}
+	}
+	\pagestyle{plain}
+	\bibliographystyle{unsrt} 
+	\bibliography{citations}
+\end{document}
