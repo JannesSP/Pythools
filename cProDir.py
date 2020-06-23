@@ -119,7 +119,12 @@ def humanbytes(B):
         return '{0:.4f} TB'.format(B/TB)
 
 def getSpecs():
-    cpufreq = psutil.cpu_freq()
+    cpufreqstring = ''
+    try:
+        cpufreq = psutil.cpu_freq()
+        cpufreqstring = f'Max Frequency: {cpufreq.max:.2f}Mhz\nMin Frequency: {cpufreq.min:.2f}Mhz\n' 
+    except NotImplementedError:
+        cpufreqstring = 'Max Frequency: N/A\nMin Frequency: N/A\n'
     svmem = psutil.virtual_memory()
     swap = psutil.swap_memory()
     
@@ -151,8 +156,7 @@ def getSpecs():
             f'CPU: {platform.processor()}' +
             f'Physical Cores: {psutil.cpu_count(logical=False)}\n' +
             f'Physical Cores: {psutil.cpu_count(logical=True)}\n' +
-            f'Max Frequency: {cpufreq.max:.2f}Mhz\n' + 
-            f'Min Frequency: {cpufreq.min:.2f}Mhz\n' + 
+            cpufreqstring + 
             f'RAM: {humanbytes(svmem.total)}\n' +
             f'Swap Memory: {humanbytes(swap.total)}\n' +
             diskstring +
