@@ -265,7 +265,7 @@ parser = ap.ArgumentParser(
 
 # required arguments
 projectgroup = parser.add_mutually_exclusive_group(required=True, )
-projectgroup.add_argument('-p', '--project', metavar='PROJECT_NAME', default=None, type=str, help='Name of the project you want to create locally.')
+projectgroup.add_argument('-p', '--project', metavar='PATH_TO_PROJECT/PROJECT_NAME', default=None, type=str, help='Name of the project you want to create locally. You can add a path, where the project is created.')
 projectgroup.add_argument('-g', '--git', metavar='GIT_URL', type=str, default=None, help='Use this argument if you already made an empty repository and want to add your project to the remote repository.')
 
 # optional arguments
@@ -313,7 +313,7 @@ if args.author is not None:
 
 if args.project is not None:
     project_dir = args.project.replace(' ', '_')
-    project_name = args.project.replace('_', ' ')
+    project_name = args.project.split('/')[-1].replace('_', ' ')
     pwd = cwd + '/' + project_dir + '/'
     projectInput['local'] = True
 
@@ -381,7 +381,7 @@ write(f'res contains the resource data the way you like, either the hard links t
 ### CREATE PROJECT FILES
 
 # creating documentation file
-docfile = rpwd + f'doc/{project_dir}_protocol.md'
+docfile = rpwd + f'doc/{project_name}_protocol.md'
 write(f'# Project {project_name}: Markdown documentation file of {project_name}.', docfile)
 write(f'{project_name} created by {author} on {time}.', docfile)
 command = ''

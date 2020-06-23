@@ -25,17 +25,19 @@ You have the possibility to link your resource data or to use a precreated empty
 
 ## Usage
 <pre>
-usage: cProDir.py [-h] (-p PROJECT_NAME | -g GIT_URL) [-pd SHORT_DESCRIPTION]
-                  [-l PATH] [-ml TRAINDATA VALDATA] [-i LIST] [-a NAME]
-                  [-s NAME] [-org NAME] [-oid ORCID] [-tex] [-sp] [-v]
+usage: cProDir.py [-h] (-p PATH_TO_PROJECT/PROJECT_NAME | -g GIT_URL)
+                  [-pd SHORT_DESCRIPTION] [-l PATH] [-ml TRAINDATA VALDATA]
+                  [-i LIST] [-a NAME] [-s NAME] [-org NAME] [-oid ORCID]
+                  [-tex] [-sp] [-v]
 
 cProDir.py helps you with Creating your PROject DIRectory with good structure
 for better navigation and reproducibility.
 
 optional arguments:
   -h, --help            show this help message and exit
-  -p PROJECT_NAME, --project PROJECT_NAME
-                        Name of the project you want to create locally.
+  -p PATH_TO_PROJECT/PROJECT_NAME, --project PATH_TO_PROJECT/PROJECT_NAME
+                        Name of the project you want to create locally. You
+                        can add a path, where the project is created.
   -g GIT_URL, --git GIT_URL
                         Use this argument if you already made an empty
                         repository and want to add your project to the remote
@@ -52,11 +54,13 @@ optional arguments:
                         ignored in git version control. Only possible if -g is
                         used!
   -a NAME, --author NAME
-                        Name of the author of the project.
+                        Name of the author of the project in quotation marks:
+                        "Forename ... Surname".
   -s NAME, --supervisor NAME
-                        Name of the supervisor.
+                        Name of the supervisor in quotation marks: "Forename
+                        ... Surname"..
   -org NAME, --organization NAME
-                        Name of the organization.
+                        Name of the organization in quotation marks: "...".
   -oid ORCID, --orcid ORCID
                         ORCID of the author of the project. Should look like
                         XXXX-XXXX-XXXX-XXXX
@@ -75,6 +79,7 @@ You are currently using version 0.4!
 -   bin: containing project binaries
 -   lib: containing external libraries
 -   doc: containing project documentation files
+-   doc/latex: containing latex scripts if you use -tex/--latex
 -   build: containing project binaries
 -   temp: containing temporary files
 -   out: containing output files, produced by processing/analyzing resources
@@ -99,6 +104,3 @@ python3 cProDir.py -p link_project -l link_data/ -tex --author 'Jannes Spangenbe
 Latex title page created with the code above.
 Click on the picture to see some other example pictures.
 [![latex title page](./img/title_page.png)](./img/)
-
-
-
