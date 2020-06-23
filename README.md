@@ -9,10 +9,10 @@ Studying bioinformatics at Friedrich-Schiller-University in Jena Germany<br>
 
 # Dependencies
 
-*   [https://gitpython.readthedocs.io/en/stable/](GitPython)
-    *   [https://anaconda.org/conda-forge/gitpython](GitPython on Conda)
-*   [https://github.com/anderskm/gputil](GPUtil)
-    *   [https://anaconda.org/conda-forge/gputil](GPUtil on Conda)
+*   [GitPython](https://gitpython.readthedocs.io/en/stable/)
+    *   [Download on Conda](https://anaconda.org/conda-forge/gitpython)
+*   [GPUtil](https://github.com/anderskm/gputil)
+    *   [Download on Conda](https://anaconda.org/conda-forge/gputil)
 
 ## cProDir
 cProDir can be used to create your project directory structure for better navigation and reproducibility in your projects.
