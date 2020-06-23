@@ -122,16 +122,16 @@ def getSpecs():
     cpufreqstring = ''
     try:
         cpufreq = psutil.cpu_freq()
-        cpufreqstring = f'Max Frequency: {cpufreq.max:.2f}Mhz\nMin Frequency: {cpufreq.min:.2f}Mhz\n' 
+        cpufreqstring = f'-    Max Frequency: {cpufreq.max:.2f}Mhz\n-    Min Frequency: {cpufreq.min:.2f}Mhz\n' 
     except NotImplementedError:
-        cpufreqstring = 'Max Frequency: N/A\nMin Frequency: N/A\n'
+        cpufreqstring = '-    Max Frequency: N/A\n-    Min Frequency: N/A\n'
     svmem = psutil.virtual_memory()
     swap = psutil.swap_memory()
     
     gpus = GPUtil.getGPUs()
     gpustring = ''
     for gpu in gpus:
-        gpustring += f'ID: {gpu.id}\n\tGPU: {gpu.name}\n\tTotal memory: {gpu.memoryTotal}MB\n'
+        gpustring += f'-    ID: {gpu.id}\n    -    GPU: {gpu.name}\n    -    Total memory: {gpu.memoryTotal}MB\n'
     
     partitions = psutil.disk_partitions()
     diskstring = ''
@@ -140,25 +140,25 @@ def getSpecs():
             partition_usage = psutil.disk_usage(partition.mountpoint)
         except PermissionError:
             continue
-        diskstring += (f'Device: {partition.device}\n\t' + 
-                       f'Mountpoint: {partition.mountpoint}\n\t' + 
-                       f'Disk: {partition.fstype}\n\t' + 
-                       f'Total Size: {humanbytes(partition_usage.total)}\n\t' + 
-                       f'Used: {humanbytes(partition_usage.used)}\n\t' + 
-                       f'Free: {humanbytes(partition_usage.free)}\n\t' +
-                       f'Percentage: {partition_usage.percent}\n')
+        diskstring += (f'-    Device: {partition.device}\n\t' + 
+                       f'-    Mountpoint: {partition.mountpoint}\n\t' + 
+                       f'-    Disk: {partition.fstype}\n\t' + 
+                       f'-    Total Size: {humanbytes(partition_usage.total)}\n\t' + 
+                       f'-    Used: {humanbytes(partition_usage.used)}\n\t' + 
+                       f'-    Free: {humanbytes(partition_usage.free)}\n\t' +
+                       f'-    Percentage: {partition_usage.percent}\n')
 
-    return ('Project created on:\n' +
-            f'System: {platform.system()}\n' + 
-            f'Release: {platform.release()}\n' +
-            f'Version: {platform.version()}\n' +
-            f'Host: {socket.gethostname()}\n' +
-            f'CPU: {platform.processor()}\n' +
-            f'Physical Cores: {psutil.cpu_count(logical=False)}\n' +
-            f'Logical Cores: {psutil.cpu_count(logical=True)}\n' +
+    return ('## Project created on:\n' +
+            f'-    System: {platform.system()}\n' + 
+            f'-    Release: {platform.release()}\n' +
+            f'-    Version: {platform.version()}\n' +
+            f'-    Host: {socket.gethostname()}\n' +
+            f'-    CPU: {platform.processor()}\n' +
+            f'-    Physical Cores: {psutil.cpu_count(logical=False)}\n' +
+            f'-    Logical Cores: {psutil.cpu_count(logical=True)}\n' +
             cpufreqstring + 
-            f'RAM: {humanbytes(svmem.total)}\n' +
-            f'Swap Memory: {humanbytes(swap.total)}\n' +
+            f'-    RAM: {humanbytes(svmem.total)}\n' +
+            f'-    Swap Memory: {humanbytes(swap.total)}\n' +
             diskstring +
             gpustring)
 
@@ -425,7 +425,7 @@ if supervisor != '':
 if organization != '':
     write(f'-    Project developed in the organization: {organization}', readmemd, docfile)
 
-write(f'\n# {project_dir} directory structure:', readmemd, docfile)
+write(f'\n## {project_name} directory structure:', readmemd, docfile)
 write('-   src: containing project scripts', readmemd, docfile)
 write('-   res: containing project resources and data', readmemd, docfile)
 write('-   bin: containing project binaries', readmemd, docfile)

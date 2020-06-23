@@ -20,7 +20,10 @@ This way uniformity is insured thoughout all your projects.
 You have the possibility to link your resource data or to use a precreated empty git remote repository to add a version control to your project.
 
 ## Patch Notes
-*   0.4 added latex project documents generation
+*   0.4 
+    * added latex project documents generation
+    * additional information like author, supervisor, organisation, etc can be added
+    * print the system specs in the README.md
 *   0.3 connect your newly generated project to a precreated empty remote git repository like github
 
 ## Usage
@@ -101,6 +104,13 @@ python3 cProDir.py -p ml_project -ml ml_data/traindata ml_data/valdata
 # Create project with latex
 python3 cProDir.py -p link_project -l link_data/ -tex --author 'Jannes Spangenberg' --supervisor 'Jannes Spangenberg' -org 'Friedrich-Schiler-University' -pd 'This is a test project'
 ```
-Latex title page created with the code above.
+## Pictures
 Click on the picture to see some other example pictures.
+
+[![Readme project description](./img/readme_01.png)](./img/)
+
+[![Readme data overview](./img/readme_02.png)](./img/)
+
 [![latex title page](./img/title_page.png)](./img/)
+
+[![latex toc](./img/table_of_content.png)](./img/)
