@@ -152,10 +152,10 @@ def getSpecs():
             f'System: {platform.system()}\n' + 
             f'Release: {platform.release()}\n' +
             f'Version: {platform.version()}\n' +
-            f'Host: {socket.gethostname()}' +
-            f'CPU: {platform.processor()}' +
+            f'Host: {socket.gethostname()}\n' +
+            f'CPU: {platform.processor()}\n' +
             f'Physical Cores: {psutil.cpu_count(logical=False)}\n' +
-            f'Physical Cores: {psutil.cpu_count(logical=True)}\n' +
+            f'Logical Cores: {psutil.cpu_count(logical=True)}\n' +
             cpufreqstring + 
             f'RAM: {humanbytes(svmem.total)}\n' +
             f'Swap Memory: {humanbytes(swap.total)}\n' +
