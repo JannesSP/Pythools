@@ -96,6 +96,8 @@ python3 cProDir.py -p ml_project -ml ml_data/traindata ml_data/valdata
 # Create project with latex
 python3 cProDir.py -p link_project -l link_data/ -tex --author 'Jannes Spangenberg' --supervisor 'Jannes Spangenberg' -org 'Friedrich-Schiler-University' -pd 'This is a test project'
 ```
+Latex title page created with the code above.
+Click on the picture to see some other example pictures.
 [![latex title page](./img/title_page.png)](./img/)
 
 
