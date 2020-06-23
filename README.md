@@ -107,9 +107,13 @@ python3 cProDir.py -p link_project -l link_data/ -tex --author 'Jannes Spangenbe
 ## Pictures
 Click on the picture to see some other example pictures.
 
+### Information that will be prepared in your README.md
+
 [![Readme project description](./img/readme_01.png)](./img/)
 
 [![Readme data overview](./img/readme_02.png)](./img/)
+
+### Thumbnail of the pdf from the prepared latex scripts 
 
 [![latex title page](./img/title_page.png)](./img/)
 
