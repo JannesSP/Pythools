@@ -37,8 +37,7 @@ If you dont add a relative or absolute path or you are using git, the project wi
 
 ## Usage
 
-<pre>
-
+```sh
 usage: createPro.py [-h] (-p PATH_TO_PROJECT/PROJECT_NAME | -g GIT_URL)
                     [-pd SHORT_DESCRIPTION] [-l PATH] [-ml TRAINDATA VALDATA]
                     [-i LIST] [-a NAME] [-s NAME] [-org NAME] [-oid ORCID]
@@ -86,8 +85,7 @@ optional arguments:
   -v, --version         show program's version number and exit
 
 You are currently using version 0.4.2!
-
-</pre>
+```
 
 ## Your project directory structure:
 -   src: containing project scripts
