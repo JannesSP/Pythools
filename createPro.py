@@ -27,15 +27,12 @@ def log(string, newline_before=False):
         sys.stderr.write('\n')
     sys.stderr.write(f'LOG: {string}\n')
 
-def write(string, filepath1, filepath2=None):
-    with open(filepath1, 'a+') as w:
-        w.write(string + '\n')
-    w.close()
-    if filepath2 is not None:
-        with open(filepath2, 'a+') as w:
+def write(string, *files):
+    for file in files:
+        with open(file, 'a+') as w:
             w.write(string + '\n')
         w.close()
-
+    
 def writeDirDescription(project_name, *files):
     for file in files:
         write(f'\n## {project_name} directory structure:', file)
