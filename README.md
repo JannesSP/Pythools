@@ -15,26 +15,30 @@ Studying bioinformatics at Friedrich-Schiller-University in Jena Germany<br>
 *   [GPUtil](https://github.com/anderskm/gputil)
     *   [Download on Conda](https://anaconda.org/conda-forge/gputil)
 
-## cProDir
-cProDir can be used to create your project directory structure for better navigation and reproducibility in your projects.
-This way uniformity is insured thoughout all your projects.
+## createPro
+createPro can be used to create your project directory structure for better navigation and reproducibility in your projects.
+This way uniformity is insured throughout all your projects.
 You have the possibility to link your resource data or to use a precreated empty git remote repository to add a version control to your project.
+If you dont add a relative or absolute path or you are using git, the project will be created in your current working directory.
 
 ## Patch Notes
+*   0.4.1
+    * fixed issue in path creation, now using os.path.join()
 *   0.4 
     * added latex project documents generation
     * additional information like author, supervisor, organisation, etc can be added
     * print the system specs in the README.md
-*   0.3 connect your newly generated project to a precreated empty remote git repository like github
+*   0.3 
+    * connect your newly generated project to a precreated empty remote git repository like github
 
 ## Usage
 <pre>
-usage: cProDir.py [-h] (-p PATH_TO_PROJECT/PROJECT_NAME | -g GIT_URL)
+usage: createPro.py [-h] (-p PATH_TO_PROJECT/PROJECT_NAME | -g GIT_URL)
                   [-pd SHORT_DESCRIPTION] [-l PATH] [-ml TRAINDATA VALDATA]
                   [-i LIST] [-a NAME] [-s NAME] [-org NAME] [-oid ORCID]
                   [-tex] [-sp] [-v]
 
-cProDir.py helps you with Creating your PROject DIRectory with good structure
+createPro.py helps you with Creating your PROject DIRectory with good structure
 for better navigation and reproducibility.
 
 optional arguments:
@@ -93,17 +97,17 @@ You are currently using version 0.4!
 
 ```sh
 # Using precreated empty github repository, hard link resource data (only accessible locally) and add gitignore paths
-python3 cProDir.py -g https://github.com/JannesSP/ml_project -ml ml_data/traindata ml_data/valdata -i 'res/*' -i '!res/README.md' -i '.gitignore'
+python3 prodir.py -g https://github.com/JannesSP/ml_project -ml ml_data/traindata ml_data/valdata -i 'res/*' -i '!res/README.md' -i '.gitignore'
 # results: https://github.com/JannesSP/ml_project
 
 # Create project locally and hard link resource data
-python3 cProDir.py -p link_project -l link_data/
+python3 prodir.py -p ./link_project -l link_data/
 
 # Create project for machine learnling
-python3 cProDir.py -p ml_project -ml ml_data/traindata ml_data/valdata
+python3 prodir.py -p ./ml_project -ml ml_data/traindata ml_data/valdata
 
 # Create project with latex
-python3 cProDir.py -p link_project -l link_data/ -tex --author 'Jannes Spangenberg' --supervisor 'Jannes Spangenberg' -org 'Friedrich-Schiler-University' -pd 'This is a test project'
+python3 prodir.py -p ./link_project -l link_data/ -tex --author 'Jannes Spangenberg' --supervisor 'Jannes Spangenberg' -org 'Friedrich-Schiler-University' -pd 'This is a test project'
 ```
 ## Pictures
 Click on the picture to see some other example pictures.

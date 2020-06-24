@@ -13,9 +13,8 @@ import socket
 import platform
 import psutil
 import GPUtil
+from pathlib import Path
 from datetime import datetime
-
-version = '0.4'
 
 ### FUNCTIONS
 
@@ -68,10 +67,10 @@ def linkAllFiles(walkpath, dst, depth=0):
 
     # check and edit input path strings
     tab = '|---'
-    if dst[-1] != '/' and dst != '':
-        dst+='/'
-    if walkpath[-1] != '/':
-        walkpath+='/'
+    # if dst[-1] != '/' and dst != '':
+    #     dst+='/'
+    # if walkpath[-1] != '/':
+    #     walkpath+='/'
 
     # make sure directory exists
     if not os.path.exists(dst):
@@ -80,21 +79,21 @@ def linkAllFiles(walkpath, dst, depth=0):
     # walk files and link them
     entry = next(os.walk(walkpath))
     for linkfile in entry[2]:
-        linkdst = dst + linkfile
-        os.link(src=walkpath + linkfile, dst=linkdst)
+        linkdst = os.path.join(dst, linkfile)
+        os.link(src=os.path.join(walkpath, linkfile), dst=linkdst)
 
         # write readme and log
         points = '.' * (60-len(f'{tab*depth}|--> {linkdst.split(project_dir)[-1]}'))
         filesize = os.path.getsize(linkdst)
         write(f'``{tab*depth}|--> {linkdst.split(project_dir)[-1]}{points}{humanbytes(filesize)}``<br>', readmemd)
-        log(f'Linked {walkpath + linkfile} to ./{project_dir + dst.split(project_dir)[1] + linkfile}')
+        log(f'Linked {walkpath + linkfile} to {os.path.join(project_dir, dst.split(project_dir)[1], linkfile)}')
         files += 1
         foldersize += filesize
 
     # walk directories
     for linkdir in entry[1]:
         write(f'``{tab*depth}|--> {dst.split(project_dir)[-1]}{linkdir}``<br>', readmemd)
-        return tuple(map(sum, zip((files, folders, foldersize), linkAllFiles(walkpath=walkpath + linkdir + '/', dst=dst + linkdir + '/', depth=depth + 1))))
+        return tuple(map(sum, zip((files, folders, foldersize), linkAllFiles(walkpath=os.path.join(walkpath, linkdir), dst=os.path.join(dst, linkdir), depth=depth + 1))))
 
     return (files, folders, foldersize)
 
@@ -164,21 +163,21 @@ def getSpecs():
 
 def latex():
     log('Create latex files.')
-    latexPath = f'./{project_dir}/doc/latex'
+    latexPath = os.path.join(project_dir, 'doc', 'latex')
     os.makedirs(latexPath)
     log(f'Created {latexPath}')
 
     # generate main.tex
     with open('./latex_template.tex', 'r') as tex_template:
-        with open(f'{latexPath}/main.tex', 'w+') as tex_main:
+        with open(os.path.join(latexPath, 'main.tex'), 'w+') as tex_main:
             for line in tex_template.readlines():
                 tex_main.write(line)
         tex_main.close()
     tex_template.close()
-    log(f'Created {latexPath}/main.tex')
+    log(f'Created {os.path.join(latexPath, "main.tex")}')
 
     # generate title page
-    with open(f'{latexPath}/title_page.tex', 'w+') as tex_title:
+    with open(os.path.join(latexPath, 'title_page.tex'), 'w+') as tex_title:
         titleOrg = ''
         if organization != '':
             titleOrg = '\tOrganization:\\par\n\t{\\scshape\\Large ' + organization + '\\par}\n\t\\vfill\n'
@@ -206,18 +205,18 @@ def latex():
                         '\t{\\large \\today\\par}\n' + 
                         '\\end{titlepage}')
     tex_title.close()
-    log(f'Created {latexPath}/title_page.tex')
+    log(f'Created {os.path.join(latexPath, "title_page.tex")}')
 
     # generate abstract
-    with open(f'{latexPath}/abstract.tex', 'w+') as tex_abstract:
+    with open(os.path.join(latexPath, 'abstract.tex'), 'w+') as tex_abstract:
         tex_abstract.write('\\section*{Abstract}\n' +
                            '\t\n' + 
                            '\t% TODO: Write your abstract here')
     tex_abstract.close()
-    log(f'Created {latexPath}/abstract.tex')
+    log(f'Created {os.path.join(latexPath, "abstract.tex")}')
 
     # generate abbreviations
-    with open(f'{latexPath}/abbreviations.tex', 'w+') as tex_abbrev:
+    with open(os.path.join(latexPath, 'abbreviations.tex'), 'w+') as tex_abbrev:
         tex_abbrev.write('\\section*{\\Huge Abbreviations}\n' + 
                          '\t\\begin{acronym}\n' +
                          '\t\t\n' +
@@ -225,51 +224,55 @@ def latex():
                          '\t\t\n' + 
                          '\t\\end{acronym}')
     tex_abbrev.close()
-    log(f'Created {latexPath}/abbreviations.tex')
+    log(f'Created {os.path.join(latexPath, "abbreviations.tex")}')
 
     # prepare doc sections
-    sections = {'introduction': 'Introduction',
-                'materials_methods': 'Materials and Methods',
-                'results': 'Results',
-                'discussion': 'Discussion'}
+    sections = {'introduction.tex': 'Introduction',
+                'materials_methods.tex': 'Materials and Methods',
+                'results.tex': 'Results',
+                'discussion.tex': 'Discussion'}
 
     # generate doc sections
     for section in sections.keys():
-        with open(f'{latexPath}/{section}.tex', 'w+') as tex_intro:
+        with open(os.path.join(latexPath, section), 'w+') as tex_intro:
             tex_intro.write('\\section{' + sections[section] + '}\n' + 
                             '\n' + 
                             f'\t% TODO: Write {sections[section].lower()} here.\n' + 
                             '\t\n')
         tex_intro.close()
-        log(f'Created {latexPath}/{section}.tex')
+        log(f'Created {os.path.join(latexPath, section)}')
 
     # generate attachments 
-    with open(f'{latexPath}/attachments.tex', 'w+') as tex_attach:
+    with open(os.path.join(latexPath, 'attachments.tex'), 'w+') as tex_attach:
         tex_attach.write('\\section*{\\Huge Attachments}\n' + 
                          '\t\n' +
                          '\t% TODO: Add your attachments here.\n')
     tex_attach.close()
-    log(f'Created {latexPath}/attachments.tex')
+    log(f'Created {os.path.join(latexPath, "attachments.tex")}')
 
     # generate citations
-    with open(f'{latexPath}/citations.bib', 'w+') as tex_bib:
+    with open(os.path.join(latexPath, 'citations.bib'), 'w+') as tex_bib:
         tex_bib.write('% Encoding: UTF-8\n' +
                       '\n' +
                       '% TODO: Add your references here.')
     tex_bib.close()
-    log(f'Created {latexPath}/citations.bib')
+    log(f'Created {os.path.join(latexPath, "citations.bib")}')
+
+version = '0.4.1'
+script = __file__
+log(f'STARTING {script}')
 
 ### PARAMS
 
 parser = ap.ArgumentParser(
-    description='cProDir.py helps you with Creating your PROject DIRectory with good structure for better navigation and reproducibility.',
+    description=f'{script} helps you with Creating your PROject DIRectory with good structure for better navigation and reproducibility.',
     formatter_class=ap.HelpFormatter,
     epilog=f'You are currently using version {version}!'
 )
 
 # required arguments
 projectgroup = parser.add_mutually_exclusive_group(required=True, )
-projectgroup.add_argument('-p', '--project', metavar='PATH_TO_PROJECT/PROJECT_NAME', default=None, type=str, help='Name of the project you want to create locally. You can add a path, where the project is created.')
+projectgroup.add_argument('-p', '--project', metavar='PATH_TO_PROJECT/PROJECT_NAME', default=None, type=str, help='Path and Name of the project you want to create locally. If the path does not exist, it will be created.')
 projectgroup.add_argument('-g', '--git', metavar='GIT_URL', type=str, default=None, help='Use this argument if you already made an empty repository and want to add your project to the remote repository.')
 
 # optional arguments
@@ -283,7 +286,6 @@ parser.add_argument('-org', '--organization', metavar='NAME', default='', type=s
 parser.add_argument('-oid', '--orcid', metavar='ORCID', default='', type=str, help='ORCID of the author of the project. Should look like XXXX-XXXX-XXXX-XXXX')
 parser.add_argument('-tex', '--latex', action='store_true', help='Use this parameter to generate latex files for project work.')
 parser.add_argument('-sp','--specs', action='store_true', help='Use this parameter to generate hardware specs in your docfile.')
-
 parser.add_argument('-v', '--version', action='version', version=f'\n%(prog)s {version}')
 
 args = parser.parse_args()
@@ -301,8 +303,6 @@ vallink = args.machine_learning[1]
 author = getpass.getuser()
 time = datetime.now().strftime("%Y.%m.%d %H:%M:%S")
 
-# create often used variables
-cwd = os.getcwd()
 
 ### CHECK INPUT
 projectInput = {'local': False, 'git': False}
@@ -318,14 +318,12 @@ if args.author is not None:
 if args.project is not None:
     project_dir = args.project.replace(' ', '_')
     project_name = args.project.split('/')[-1].replace('_', ' ')
-    pwd = cwd + '/' + project_dir + '/'
     projectInput['local'] = True
 
 if args.git is not None:
     giturl = args.git
     project_dir = giturl.split('/')[-1].replace(' ', '_')
     project_name = giturl.split('/')[-1].replace('_', ' ')
-    pwd = cwd + '/' + project_dir + '/'
     git_user_name = giturl.split('/')[-2]
     git_service = giturl.split('/')[-3]
     projectInput['git'] = True
@@ -333,9 +331,9 @@ if args.git is not None:
 
 ### CREATE PROJECT DIRECTORY
 
-# creating project working directory 'pwd'
-if os.path.exists(pwd):
-    error(f'Path {pwd} already exists!\nStopped with error code 1!', 1)
+# creating project working directory 'project_dir'
+if os.path.exists(project_dir):
+    error(f'Path {project_dir} already exists!\nStopped with error code 1!', 1)
 
 if datalink is not None and not os.path.exists(datalink):
     error(f'Path {datalink} does not exist!\nStopped with error code 2!', 2)
@@ -347,19 +345,18 @@ if args.gitignore is not None and args.git is None:
     error(f'Can use --gitignore only if --git is used!', 4)
 
 if projectInput['git']:
-    repo = git.Repo.clone_from(giturl, pwd)
+    repo = git.Repo.clone_from(giturl, project_dir)
 
 if projectInput['local']:
-    os.makedirs(pwd)
+    os.makedirs(project_dir)
 
 if projectInput['git']:
     for f in args.gitignore:
-        write(f, pwd + '.gitignore')
+        write(f, project_dir + '.gitignore')
 
-readmemd = pwd + 'README.md'
-readmesh = pwd + 'README.sh'
-log(f'Created project {project_name} directory in {pwd}')
-rpwd = './' + project_dir + pwd.split(project_dir)[1]
+readmemd = os.path.join(project_dir, 'README.md')
+readmesh = os.path.join(project_dir, 'README.sh')
+log(f'Created project \"{project_name}\" directory in {project_dir}')
 
 # making directories
 readmes = {}
@@ -367,16 +364,16 @@ project_dirs = ['src', 'res', 'bin', 'lib', 'doc', 'build', 'out', 'out/plots', 
 for dire in project_dirs:
 
     # check if path already exists
-    if os.path.exists(pwd + dire):
-        log(f'Path {rpwd+dire} already exists!')    
+    if os.path.exists(os.path.join(project_dir, dire)):
+        log(f'Path {os.path.join(project_dir, dire)} already exists!')    
     else:
-        os.makedirs(pwd + dire)
-        log(f'Created {rpwd + dire}')
+        os.makedirs(os.path.join(project_dir, dire))
+        log(f'Created {os.path.join(project_dir, dire)}')
     
     # dont create readmes for out/plots and doc
     if dire != 'out/plots' and dire != 'doc':
-        readmes[dire] = rpwd + dire + '/README.md'
-        write(f'<!-- Created markdown file for {dire}/ on {time} from {author}. -->', readmes[dire])
+        readmes[dire] = os.path.join(project_dir, dire, 'README.md')
+        write(f'<!-- Created markdown file for {os.path.join(dire, "")} on {time} from {author}. -->', readmes[dire])
         log(f'Created {readmes[dire]}')
 
 write(f'res contains the resource data the way you like, either the hard links to your resource data or the actual resource data files.', readmes['res'])
@@ -385,7 +382,7 @@ write(f'res contains the resource data the way you like, either the hard links t
 ### CREATE PROJECT FILES
 
 # creating documentation file
-docfile = rpwd + f'doc/{project_name}_protocol.md'
+docfile = os.path.join(project_dir, 'doc', f'{project_name}_protocol.md')
 write(f'# Project {project_name}: Markdown documentation file of {project_name}.', docfile)
 write(f'{project_name} created by {author} on {time}.', docfile)
 command = ''
@@ -402,18 +399,18 @@ if projectInput['git']:
     files = list(readmes.values())
     files.append(docfile)
     repo.index.add(files)
-    repo.index.commit(f'initial commit of {project_name} with cProDir {version}')
+    repo.index.commit(f'initial commit of {project_name} with {script} {version}')
     log(f'Added {len(files)} files to git commit.')
 
 # writing major readme file
 write(f'# Project {project_name} created on {time} from {author}.', readmemd, readmesh)
-write(f'# Created with cProDir version {version}.', readmesh)
+write(f'# Created with {script} version {version}.', readmesh)
 
 if projectInput['git']:
     write(f'# Using git {giturl} for version control on account {git_user_name} on {git_service}.', readmesh)
     write(f'-    Using git {giturl} for version control on account {git_user_name} on {git_service}.', readmemd)
 
-write(f'-    Created with cProDir version {version}.', readmemd, docfile)
+write(f'-    Created with {script} version {version}.', readmemd, docfile)
 write(f'-    Project {project_name} created on {time} from {author}.', readmemd, docfile)
 
 if orcid != '':
@@ -441,22 +438,22 @@ if activeParams['specs']:
 
 # if no datalink provided create train and validate data folders
 if trainlink is not None or vallink is not None:
-    os.makedirs(pwd + 'res/traindata/')
-    log(f'Created {pwd}res/traindata/')
-    os.makedirs(pwd + 'res/valdata/')
-    log(f'Created {pwd}res/valdata/')
+    os.makedirs(os.path.join(project_dir, 'res' , 'traindata'))
+    log(f'Created {os.path.join(project_dir, "res" , "traindata")}')
+    os.makedirs(os.path.join(project_dir, 'res', 'valdata'))
+    log(f'Created {os.path.join(project_dir, "res" "valdata")}')
     write('\n# Data to be analyzed:', readmemd, docfile)
     
     if trainlink is not None:
         write(f'Resources/Data linked from<br>\n{os.path.abspath(trainlink)}<br>', readmemd, docfile)
-        (files, folders, datasize) = linkAllFiles(walkpath=trainlink, dst=pwd+'res/traindata/')
+        (files, folders, datasize) = linkAllFiles(walkpath=trainlink, dst=os.path.join(project_dir, 'res', 'traindata'))
         log(f'Linked traindata: {files} files in {folders} folders.')
         log(f'Linked traindata of size {humanbytes(datasize)}')
         write(f'Linked traindata: {files} files in {folders} folders with a total datasize of {humanbytes(datasize)}.<br>\n', readmemd, docfile)
 
     if vallink is not None:
         write(f'Resources/Data linked from<br>\n{os.path.abspath(vallink)}<br>', readmemd, docfile)
-        (files, folders, datasize) = linkAllFiles(walkpath=vallink, dst=pwd+'res/valdata/')
+        (files, folders, datasize) = linkAllFiles(walkpath=vallink, dst=os.path.join(project_dir, 'res', 'valdata'))
         log(f'Linked validationdata: {files} files in {folders} folders.')
         log(f'Linked validationdata of size {humanbytes(datasize)}')
         write(f'Linked validationdata: {files} files in {folders} folders with a total datasize of {humanbytes(datasize)}.<br>\n', readmemd, docfile)
@@ -465,7 +462,7 @@ if trainlink is not None or vallink is not None:
 elif datalink is not None:
     write('\n# Data to be analyzed:', readmemd)
     write(f'Resources/Data linked from<br>\n{os.path.abspath(datalink)}<br>', readmemd, docfile)
-    (files, folders, datasize) = linkAllFiles(walkpath=datalink, dst=pwd+'res/')
+    (files, folders, datasize) = linkAllFiles(walkpath=datalink, dst=os.path.join(project_dir, 'res'))
     log(f'Linked {files} files in {folders} folders.')
     write(f'Linked {files} files in {folders} folders with a total datasize of {humanbytes(datasize)}.', readmemd, docfile)
     log(f'Linked data of size {humanbytes(datasize)}')
