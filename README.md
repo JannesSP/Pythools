@@ -6,7 +6,7 @@ SCIence PROject TOOLS contains usefule python scripts for everyday science proje
 
 # Creator
 Jannes Spangenberg<br>
-Studying bioinformatics at Friedrich-Schiller-University in Jena Germany<br>
+Bioinformatics student at Friedrich-Schiller-University in Jena Germany<br>
 
 # Dependencies
 
@@ -114,12 +114,12 @@ Click on the picture to see some other example pictures.
 
 ### Information that will be prepared in your README.md
 
-[![Readme project description](./img/readme_01.png)](./img/)
+[![Readme project description](./img/readme_1.png)](./img/)
 
-[![Readme data overview](./img/readme_02.png)](./img/)
+[![Readme data overview](./img/readme_2.png)](./img/)
 
 ### Thumbnail of the pdf from the prepared latex scripts 
 
-[![latex title page](./img/title_page.png)](./img/)
+[![latex title page](./img/titlepage.png)](./img/)
 
-[![latex toc](./img/table_of_content.png)](./img/)
+[![latex toc](./img/toc.png)](./img/)
