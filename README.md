@@ -60,14 +60,14 @@ optional arguments:
   -pd SHORT_DESCRIPTION, --project_description SHORT_DESCRIPTION
                         Short description about the project.
   -l PATH, --link PATH  Path of the folder of your resources/data. The linked
-                        resources or data can be found in ./<project>/res/.
+                        resources or data can be found in ./&ltproject&gt/res/.
   -ml TRAINDATA VALDATA, --machine_learning TRAINDATA VALDATA
                         Path to traindata and path to validationsdata. Data
-                        gets linked into ./<project>/res/ folder.
+                        gets linked into ./&ltproject&gt/res/ folder.
   -i LIST, --gitignore LIST
                         List of 'directories' or 'files' that should be
-                        ignored in git version control. Only possible if -g is
-                        used!
+                        ignored in git version control. Only possible in
+                        combination with -g/--git!
   -a NAME, --author NAME
                         Name of the author of the project in quotation marks:
                         "Forename ... Surname".
@@ -78,7 +78,7 @@ optional arguments:
                         Name of the organization in quotation marks: "...".
   -oid ORCID, --orcid ORCID
                         ORCID of the author of the project. Should look like
-                        XXXX-XXXX-XXXX-XXXX
+                        XXXX-XXXX-XXXX-XXXX.
   -tex, --latex         Use this parameter to generate latex files for project
                         work.
   -sp, --specs          Use this parameter to generate hardware specs in your

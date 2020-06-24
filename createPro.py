@@ -282,11 +282,11 @@ def parse_args(args):
     parser.add_argument('-pd', '--project_description', metavar='SHORT_DESCRIPTION', default='', type=str, help='Short description about the project.')
     parser.add_argument('-l', '--link', metavar='PATH', type=str, default=None, help='Path of the folder of your resources/data.\nThe linked resources or data can be found in ./<project>/res/.')
     parser.add_argument('-ml', '--machine_learning', nargs=2, metavar=('TRAINDATA', 'VALDATA'), type=str, default=(None, None), help='Path to traindata and path to validationsdata.\nData gets linked into ./<project>/res/ folder.')
-    parser.add_argument('-i', '--gitignore', metavar='LIST', action='append', default=[], type=list, help='List of \'directories\' or \'files\' that should be ignored in git version control.\nOnly possible if -g is used!')
+    parser.add_argument('-i', '--gitignore', metavar='LIST', action='append', default=[], type=list, help='List of \'directories\' or \'files\' that should be ignored in git version control.\nOnly possible in combination with -g/--git!')
     parser.add_argument('-a', '--author', metavar='NAME', default=None, type=str, help='Name of the author of the project in quotation marks: "Forename ... Surname".')
     parser.add_argument('-s', '--supervisor', metavar='NAME', default='', type=str, help='Name of the supervisor in quotation marks: "Forename ... Surname".')
     parser.add_argument('-org', '--organization', metavar='NAME', default='', type=str, help='Name of the organization in quotation marks: "...".')
-    parser.add_argument('-oid', '--orcid', metavar='ORCID', default='', type=str, help='ORCID of the author of the project. Should look like XXXX-XXXX-XXXX-XXXX')
+    parser.add_argument('-oid', '--orcid', metavar='ORCID', default='', type=str, help='ORCID of the author of the project. Should look like XXXX-XXXX-XXXX-XXXX.')
     parser.add_argument('-tex', '--latex', action='store_true', default=False, help='Use this parameter to generate latex files for project work.')
     parser.add_argument('-sp','--specs', action='store_true', default=False, help='Use this parameter to generate hardware specs in your docfile.')
         
