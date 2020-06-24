@@ -36,6 +36,19 @@ def write(string, filepath1, filepath2=None):
             w.write(string + '\n')
         w.close()
 
+def writeDirDescription(project_name, *files):
+    for file in files:
+        write(f'\n## {project_name} directory structure:', file)
+        write('-   src: containing project scripts', file)
+        write('-   res: containing project resources and data', file)
+        write('-   bin: containing project binaries', file)
+        write('-   lib: containing external libraries', file)
+        write('-   doc: containing project documentation files', file)
+        write('-   build: containing project binaries', file)
+        write('-   temp: containing temporary files', file)
+        write('-   out: containing output files, produced by processing/analyzing resources', file)
+        write('-   out/plots: containing output plot files and diagrams', file)
+
 def checkOrcID(orcid):
     # splits orcid into digit set
     digitSets = orcid.split('-')
@@ -60,17 +73,13 @@ def checkOrcID(orcid):
     # comparing checksum with check digit
     return str(result) == checkDigit 
 
-def linkAllFiles(walkpath, dst, depth=0):
+def linkAllFiles(project_dir, readmemd, walkpath, dst, depth=0):
     files = 0
     folders = 1
     foldersize = 0
 
     # check and edit input path strings
     tab = '|---'
-    # if dst[-1] != '/' and dst != '':
-    #     dst+='/'
-    # if walkpath[-1] != '/':
-    #     walkpath+='/'
 
     # make sure directory exists
     if not os.path.exists(dst):
@@ -93,7 +102,7 @@ def linkAllFiles(walkpath, dst, depth=0):
     # walk directories
     for linkdir in entry[1]:
         write(f'``{tab*depth}|--> {dst.split(project_dir)[-1]}{linkdir}``<br>', readmemd)
-        return tuple(map(sum, zip((files, folders, foldersize), linkAllFiles(walkpath=os.path.join(walkpath, linkdir), dst=os.path.join(dst, linkdir), depth=depth + 1))))
+        return tuple(map(sum, zip((files, folders, foldersize), linkAllFiles(project_dir=project_dir, readmemd=readmemd, walkpath=os.path.join(walkpath, linkdir), dst=os.path.join(dst, linkdir), depth=depth + 1))))
 
     return (files, folders, foldersize)
 
@@ -161,10 +170,9 @@ def getSpecs():
             diskstring +
             gpustring)
 
-def latex():
+def latex(project_name, project_dir, project_description, organization, author, orcid, supervisor):
     log('Create latex files.')
-    latexPath = os.path.join(project_dir, 'doc', 'latex')
-    os.makedirs(latexPath)
+    latexPath = os.path.join(project_dir, 'doc')
     log(f'Created {latexPath}')
 
     # generate main.tex
@@ -258,220 +266,223 @@ def latex():
     tex_bib.close()
     log(f'Created {os.path.join(latexPath, "citations.bib")}')
 
-version = '0.4.1'
-script = __file__
-log(f'STARTING {script}')
-
 ### PARAMS
 
-parser = ap.ArgumentParser(
-    description=f'{script} helps you with Creating your PROject DIRectory with good structure for better navigation and reproducibility.',
-    formatter_class=ap.HelpFormatter,
-    epilog=f'You are currently using version {version}!'
-)
+def parse_args(args):
 
-# required arguments
-projectgroup = parser.add_mutually_exclusive_group(required=True, )
-projectgroup.add_argument('-p', '--project', metavar='PATH_TO_PROJECT/PROJECT_NAME', default=None, type=str, help='Path and Name of the project you want to create locally. If the path does not exist, it will be created.')
-projectgroup.add_argument('-g', '--git', metavar='GIT_URL', type=str, default=None, help='Use this argument if you already made an empty repository and want to add your project to the remote repository.')
+    parser = ap.ArgumentParser(
+        description=f'{script} helps you with Creating your PROject DIRectory with good structure for better navigation and reproducibility.',
+        formatter_class=ap.HelpFormatter,
+        epilog=f'You are currently using version {version}!'
+    )
 
-# optional arguments
-parser.add_argument('-pd', '--project_description', metavar='SHORT_DESCRIPTION', default='', type=str, help='Short description about the project.')
-parser.add_argument('-l', '--link', metavar='PATH', type=str, default=None, help='Path of the folder of your resources/data.\nThe linked resources or data can be found in ./<project>/res/.')
-parser.add_argument('-ml', '--machine_learning', nargs=2, metavar=('TRAINDATA', 'VALDATA'), type=str, default=(None, None), help='Path to traindata and path to validationsdata.\nData gets linked into ./<project>/res/ folder.')
-parser.add_argument('-i', '--gitignore', metavar='LIST', action='append', default=None, type=list, help='List of \'directories\' or \'files\' that should be ignored in git version control.\nOnly possible if -g is used!')
-parser.add_argument('-a', '--author', metavar='NAME', default=None, type=str, help='Name of the author of the project in quotation marks: "Forename ... Surname".')
-parser.add_argument('-s', '--supervisor', metavar='NAME', default='', type=str, help='Name of the supervisor in quotation marks: "Forename ... Surname".')
-parser.add_argument('-org', '--organization', metavar='NAME', default='', type=str, help='Name of the organization in quotation marks: "...".')
-parser.add_argument('-oid', '--orcid', metavar='ORCID', default='', type=str, help='ORCID of the author of the project. Should look like XXXX-XXXX-XXXX-XXXX')
-parser.add_argument('-tex', '--latex', action='store_true', help='Use this parameter to generate latex files for project work.')
-parser.add_argument('-sp','--specs', action='store_true', help='Use this parameter to generate hardware specs in your docfile.')
-parser.add_argument('-v', '--version', action='version', version=f'\n%(prog)s {version}')
+    # required arguments
+    projectgroup = parser.add_mutually_exclusive_group(required=True, )
+    projectgroup.add_argument('-p', '--project', metavar='PATH_TO_PROJECT/PROJECT_NAME', default=None, type=str, help='Path and Name of the project you want to create locally. If the path does not exist, it will be created.')
+    projectgroup.add_argument('-g', '--git', metavar='GIT_URL', type=str, default=None, help='Use this argument if you already made an empty repository and want to add your project to the remote repository.')
 
-args = parser.parse_args()
+    # optional arguments
+    parser.add_argument('-pd', '--project_description', metavar='SHORT_DESCRIPTION', default='', type=str, help='Short description about the project.')
+    parser.add_argument('-l', '--link', metavar='PATH', type=str, default=None, help='Path of the folder of your resources/data.\nThe linked resources or data can be found in ./<project>/res/.')
+    parser.add_argument('-ml', '--machine_learning', nargs=2, metavar=('TRAINDATA', 'VALDATA'), type=str, default=(None, None), help='Path to traindata and path to validationsdata.\nData gets linked into ./<project>/res/ folder.')
+    parser.add_argument('-i', '--gitignore', metavar='LIST', action='append', default=None, type=list, help='List of \'directories\' or \'files\' that should be ignored in git version control.\nOnly possible if -g is used!')
+    parser.add_argument('-a', '--author', metavar='NAME', default=None, type=str, help='Name of the author of the project in quotation marks: "Forename ... Surname".')
+    parser.add_argument('-s', '--supervisor', metavar='NAME', default='', type=str, help='Name of the supervisor in quotation marks: "Forename ... Surname".')
+    parser.add_argument('-org', '--organization', metavar='NAME', default='', type=str, help='Name of the organization in quotation marks: "...".')
+    parser.add_argument('-oid', '--orcid', metavar='ORCID', default='', type=str, help='ORCID of the author of the project. Should look like XXXX-XXXX-XXXX-XXXX')
+    parser.add_argument('-tex', '--latex', action='store_true', default=False, help='Use this parameter to generate latex files for project work.')
+    parser.add_argument('-sp','--specs', action='store_true', default=False, help='Use this parameter to generate hardware specs in your docfile.')
+        
+    parser.add_argument('-v', '--version', action='version', version=f'\n%(prog)s {version}')
 
-activeParams = {'latex': args.latex, 'specs': args.specs}
+    return parser.parse_args()
 
-datalink = args.link
-project_description = args.project_description
-organization = args.organization
-supervisor = args.supervisor
-tex = args.latex
-orcid = args.orcid
-trainlink = args.machine_learning[0]
-vallink = args.machine_learning[1]
-author = getpass.getuser()
-time = datetime.now().strftime("%Y.%m.%d %H:%M:%S")
+version = '0.4.1'
+script = __file__
 
+def main():
 
-### CHECK INPUT
-projectInput = {'local': False, 'git': False}
+    log(f'STARTING {script}')
 
-# check if orcid syntax and checksum
-if args.orcid != '':
-    if checkOrcID(orcid):
-        error('ORCID does not match standards!', 5)
+    args = parse_args(sys.argv[1:])
 
-if args.author is not None:
-    author = args.author
+    activeParams = {'latex': args.latex, 'specs': args.specs}
 
-if args.project is not None:
-    project_dir = args.project.replace(' ', '_')
-    project_name = args.project.split('/')[-1].replace('_', ' ')
-    projectInput['local'] = True
+    datalink = args.link
+    project_description = args.project_description
+    organization = args.organization
+    supervisor = args.supervisor
+    orcid = args.orcid
+    trainlink = args.machine_learning[0]
+    vallink = args.machine_learning[1]
+    author = getpass.getuser()
+    time = datetime.now().strftime("%Y.%m.%d %H:%M:%S")
 
-if args.git is not None:
-    giturl = args.git
-    project_dir = giturl.split('/')[-1].replace(' ', '_')
-    project_name = giturl.split('/')[-1].replace('_', ' ')
-    git_user_name = giturl.split('/')[-2]
-    git_service = giturl.split('/')[-3]
-    projectInput['git'] = True
-    log(f'Using git {giturl} for version control!')
+    ### CHECK INPUT
+    projectInput = {'local': False, 'git': False}
 
-### CREATE PROJECT DIRECTORY
+    # check if orcid syntax and checksum
+    if args.orcid != '':
+        if checkOrcID(orcid):
+            error('ORCID does not match standards!', 5)
 
-# creating project working directory 'project_dir'
-if os.path.exists(project_dir):
-    error(f'Path {project_dir} already exists!\nStopped with error code 1!', 1)
+    if args.author is not None:
+        author = args.author
 
-if datalink is not None and not os.path.exists(datalink):
-    error(f'Path {datalink} does not exist!\nStopped with error code 2!', 2)
+    if args.project is not None:
+        project_dir = args.project.replace(' ', '_')
+        project_name = args.project.split('/')[-1].replace('_', ' ')
+        projectInput['local'] = True
 
-if datalink is not None and (trainlink is not None or vallink is not None):
-    error(f'Cannot use --link and --machine_learning together! Please choose only one of them!', 3)
+    if args.git is not None:
+        giturl = args.git
+        project_dir = giturl.split('/')[-1].replace(' ', '_')
+        project_name = giturl.split('/')[-1].replace('_', ' ')
+        git_user_name = giturl.split('/')[-2]
+        git_service = giturl.split('/')[-3]
+        projectInput['git'] = True
+        log(f'Using git {giturl} for version control!')
 
-if args.gitignore is not None and args.git is None:
-    error(f'Can use --gitignore only if --git is used!', 4)
+    ### CREATE PROJECT DIRECTORY
 
-if projectInput['git']:
-    repo = git.Repo.clone_from(giturl, project_dir)
+    # creating project working directory 'project_dir'
+    if os.path.exists(project_dir):
+        error(f'Path {project_dir} already exists!\nStopped with error code 1!', 1)
 
-if projectInput['local']:
-    os.makedirs(project_dir)
+    if datalink is not None and not os.path.exists(datalink):
+        error(f'Path {datalink} does not exist!\nStopped with error code 2!', 2)
 
-if projectInput['git']:
-    for f in args.gitignore:
-        write(f, project_dir + '.gitignore')
+    if datalink is not None and (trainlink is not None or vallink is not None):
+        error(f'Cannot use --link and --machine_learning together! Please choose only one of them!', 3)
 
-readmemd = os.path.join(project_dir, 'README.md')
-readmesh = os.path.join(project_dir, 'README.sh')
-log(f'Created project \"{project_name}\" directory in {project_dir}')
+    if args.gitignore is not None and args.git is None:
+        error(f'Can use --gitignore only if --git is used!', 4)
 
-# making directories
-readmes = {}
-project_dirs = ['src', 'res', 'bin', 'lib', 'doc', 'build', 'out', 'out/plots', 'temp']
-for dire in project_dirs:
+    if projectInput['git']:
+        repo = git.Repo.clone_from(giturl, project_dir)
 
-    # check if path already exists
-    if os.path.exists(os.path.join(project_dir, dire)):
-        log(f'Path {os.path.join(project_dir, dire)} already exists!')    
-    else:
-        os.makedirs(os.path.join(project_dir, dire))
-        log(f'Created {os.path.join(project_dir, dire)}')
-    
-    # dont create readmes for out/plots and doc
-    if dire != 'out/plots' and dire != 'doc':
-        readmes[dire] = os.path.join(project_dir, dire, 'README.md')
-        write(f'<!-- Created markdown file for {os.path.join(dire, "")} on {time} from {author}. -->', readmes[dire])
-        log(f'Created {readmes[dire]}')
+    if projectInput['local']:
+        os.makedirs(project_dir)
 
-write(f'res contains the resource data the way you like, either the hard links to your resource data or the actual resource data files.', readmes['res'])
+    if projectInput['git']:
+        for f in args.gitignore:
+            write(f, project_dir + '.gitignore')
 
+    readmemd = os.path.join(project_dir, 'README.md')
+    readmesh = os.path.join(project_dir, 'README.sh')
+    log(f'Created project \"{project_name}\" directory in {project_dir}')
 
-### CREATE PROJECT FILES
+    # making directories
+    readmes = {}
+    project_dirs = ['src', 'res', 'bin', 'lib', 'doc', 'build', 'out', 'out/plots', 'temp']
+    for dire in project_dirs:
 
-# creating documentation file
-docfile = os.path.join(project_dir, 'doc', f'{project_name}_protocol.md')
-write(f'# Project {project_name}: Markdown documentation file of {project_name}.', docfile)
-write(f'{project_name} created by {author} on {time}.', docfile)
-command = ''
-for arg in sys.argv:
-    command += arg
-write(f'Used command for creation is:\n{command}', docfile)
-log(f'Created {docfile}')
+        # check if path already exists
+        if os.path.exists(os.path.join(project_dir, dire)):
+            log(f'Path {os.path.join(project_dir, dire)} already exists!')    
+        else:
+            os.makedirs(os.path.join(project_dir, dire))
+            log(f'Created {os.path.join(project_dir, dire)}')
+        
+        # dont create readmes for out/plots and doc
+        if dire != 'out/plots' and dire != 'doc':
+            readmes[dire] = os.path.join(project_dir, dire, 'README.md')
+            write(f'<!-- Created markdown file for {os.path.join(dire, "")} on {time} from {author}. -->', readmes[dire])
+            log(f'Created {readmes[dire]}')
 
-if activeParams['latex']:
-    latex()
+    write(f'res contains the resource data the way you like, either the hard links to your resource data or the actual resource data files.', readmes['res'])
 
-# add files to commit for git
-if projectInput['git']:
-    files = list(readmes.values())
-    files.append(docfile)
-    repo.index.add(files)
-    repo.index.commit(f'initial commit of {project_name} with {script} {version}')
-    log(f'Added {len(files)} files to git commit.')
+    ### CREATE PROJECT FILES
 
-# writing major readme file
-write(f'# Project {project_name} created on {time} from {author}.', readmemd, readmesh)
-write(f'# Created with {script} version {version}.', readmesh)
+    command = f'{script} '
+    for arg in sys.argv[1:]:
+        if arg.startswith('-'):
+            command += f'{arg} '
+        else:
+            command += f'\'{arg}\' '
 
-if projectInput['git']:
-    write(f'# Using git {giturl} for version control on account {git_user_name} on {git_service}.', readmesh)
-    write(f'-    Using git {giturl} for version control on account {git_user_name} on {git_service}.', readmemd)
+    # writing major readme file
+    write(f'# Project \'{project_name}\' created on {time} from {author}.', readmemd, readmesh)
+    write(f'# with {script} version {version}.', readmesh)
+    write(f'# Used the following command in {os.getcwd()}', readmesh)
+    write(command, readmesh)
 
-write(f'-    Created with {script} version {version}.', readmemd, docfile)
-write(f'-    Project {project_name} created on {time} from {author}.', readmemd, docfile)
+    if activeParams['latex']:
+        latex(project_name=project_name,
+              project_dir=project_dir,
+              project_description=project_description,
+              organization=organization,
+              author=author,
+              orcid=orcid,
+              supervisor=supervisor)
 
-if orcid != '':
-    write(f'-    ORCID of the author: https://orcid.org/{orcid}', readmemd, docfile)
+    # add files to commit for git
+    if projectInput['git']:
+        files = list(readmes.values())
+        repo.index.add(files)
+        repo.index.commit(f'initial commit of {project_name} with {script} {version}')
+        log(f'Added {len(files)} files to git commit.')
 
-if supervisor != '':
-    write(f'-    Project supervised by: {supervisor}', readmemd, docfile)
+    if projectInput['git']:
+        write(f'# Using git {giturl} for version control on account {git_user_name} on {git_service}.', readmesh)
+        write(f'-    Using git {giturl} for version control on account {git_user_name} on {git_service}.', readmemd)
 
-if organization != '':
-    write(f'-    Project developed in the organization: {organization}', readmemd, docfile)
+    write(f'-    Created with {script} version {version} from https://github.com/JannesSP/sciProTools.', readmemd)
+    write(f'<pre>\n{command}\n</pre>', readmemd)
 
-write(f'\n## {project_name} directory structure:', readmemd, docfile)
-write('-   src: containing project scripts', readmemd, docfile)
-write('-   res: containing project resources and data', readmemd, docfile)
-write('-   bin: containing project binaries', readmemd, docfile)
-write('-   lib: containing external libraries', readmemd, docfile)
-write('-   doc: containing project documentation files', readmemd, docfile)
-write('-   build: containing project binaries', readmemd, docfile)
-write('-   temp: containing temporary files', readmemd, docfile)
-write('-   out: containing output files, produced by processing/analyzing resources', readmemd, docfile)
-write('-   out/plots: containing output plot files and diagrams', readmemd, docfile)
+    if orcid != '':
+        write(f'-    ORCID of the author: https://orcid.org/{orcid}', readmemd)
 
-if activeParams['specs']:
-    write('\n' + getSpecs(), readmemd, docfile)
+    if supervisor != '':
+        write(f'-    Project supervised by: {supervisor}', readmemd)
 
-# if no datalink provided create train and validate data folders
-if trainlink is not None or vallink is not None:
-    os.makedirs(os.path.join(project_dir, 'res' , 'traindata'))
-    log(f'Created {os.path.join(project_dir, "res" , "traindata")}')
-    os.makedirs(os.path.join(project_dir, 'res', 'valdata'))
-    log(f'Created {os.path.join(project_dir, "res" "valdata")}')
-    write('\n# Data to be analyzed:', readmemd, docfile)
-    
-    if trainlink is not None:
-        write(f'Resources/Data linked from<br>\n{os.path.abspath(trainlink)}<br>', readmemd, docfile)
-        (files, folders, datasize) = linkAllFiles(walkpath=trainlink, dst=os.path.join(project_dir, 'res', 'traindata'))
-        log(f'Linked traindata: {files} files in {folders} folders.')
-        log(f'Linked traindata of size {humanbytes(datasize)}')
-        write(f'Linked traindata: {files} files in {folders} folders with a total datasize of {humanbytes(datasize)}.<br>\n', readmemd, docfile)
+    if organization != '':
+        write(f'-    Project developed at: {organization}', readmemd)
 
-    if vallink is not None:
-        write(f'Resources/Data linked from<br>\n{os.path.abspath(vallink)}<br>', readmemd, docfile)
-        (files, folders, datasize) = linkAllFiles(walkpath=vallink, dst=os.path.join(project_dir, 'res', 'valdata'))
-        log(f'Linked validationdata: {files} files in {folders} folders.')
-        log(f'Linked validationdata of size {humanbytes(datasize)}')
-        write(f'Linked validationdata: {files} files in {folders} folders with a total datasize of {humanbytes(datasize)}.<br>\n', readmemd, docfile)
+    writeDirDescription(project_name, readmemd)
 
-# linking data
-elif datalink is not None:
-    write('\n# Data to be analyzed:', readmemd)
-    write(f'Resources/Data linked from<br>\n{os.path.abspath(datalink)}<br>', readmemd, docfile)
-    (files, folders, datasize) = linkAllFiles(walkpath=datalink, dst=os.path.join(project_dir, 'res'))
-    log(f'Linked {files} files in {folders} folders.')
-    write(f'Linked {files} files in {folders} folders with a total datasize of {humanbytes(datasize)}.', readmemd, docfile)
-    log(f'Linked data of size {humanbytes(datasize)}')
-    log('Done linking resources/data.')
+    if activeParams['specs']:
+        write('\n' + getSpecs(), readmemd)
 
-# push commits to git remote
-if projectInput['git']:
-    repo.remote("origin").push()
-    log(f'Pushed files to {giturl}.')
+    # if no datalink provided create train and validate data folders
+    if trainlink is not None or vallink is not None:
+        os.makedirs(os.path.join(project_dir, 'res' , 'traindata'))
+        log(f'Created {os.path.join(project_dir, "res" , "traindata")}')
+        os.makedirs(os.path.join(project_dir, 'res', 'valdata'))
+        log(f'Created {os.path.join(project_dir, "res", "valdata")}')
+        write('\n# Data to be analyzed:', readmemd)
+        
+        if trainlink is not None:
+            write(f'Resources/Data linked from<br>\n{os.path.abspath(trainlink)}<br>', readmemd)
+            (files, folders, datasize) = linkAllFiles(project_dir=project_dir, readmemd=readmemd, walkpath=trainlink, dst=os.path.join(project_dir, 'res', 'traindata'))
+            log(f'Linked traindata: {files} files in {folders} folders.')
+            log(f'Linked traindata of size {humanbytes(datasize)}')
+            write(f'Linked traindata: {files} files in {folders} folders with a total datasize of {humanbytes(datasize)}.<br>\n', readmemd)
 
-log(f'Created {readmemd}, {readmesh} and {docfile}')
-log('Done')
+        if vallink is not None:
+            write(f'Resources/Data linked from<br>\n{os.path.abspath(vallink)}<br>', readmemd)
+            (files, folders, datasize) = linkAllFiles(project_dir=project_dir, readmemd=readmemd, walkpath=vallink, dst=os.path.join(project_dir, 'res', 'valdata'))
+            log(f'Linked validationdata: {files} files in {folders} folders.')
+            log(f'Linked validationdata of size {humanbytes(datasize)}')
+            write(f'Linked validationdata: {files} files in {folders} folders with a total datasize of {humanbytes(datasize)}.<br>\n', readmemd)
+
+    # linking data
+    elif datalink is not None:
+        write('\n# Data to be analyzed:', readmemd)
+        write(f'Resources/Data linked from<br>\n{os.path.abspath(datalink)}<br>', readmemd)
+        (files, folders, datasize) = linkAllFiles(project_dir=project_dir, readmemd=readmemd, walkpath=datalink, dst=os.path.join(project_dir, 'res'))
+        log(f'Linked {files} files in {folders} folders.')
+        write(f'Linked {files} files in {folders} folders with a total datasize of {humanbytes(datasize)}.', readmemd)
+        log(f'Linked data of size {humanbytes(datasize)}')
+        log('Done linking resources/data.')
+
+    # push commits to git remote
+    if projectInput['git']:
+        repo.remote("origin").push()
+        log(f'Pushed files to {giturl}.')
+
+    write(f'# Protocol\n## {time.split(" ")[0]}', readmemd)
+    log(f'Created {readmemd} and {readmesh}')
+    log('Done')
+
+main()
