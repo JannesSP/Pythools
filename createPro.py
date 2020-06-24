@@ -281,7 +281,7 @@ parser.add_argument('-l', '--link', metavar='PATH', type=str, default=None, help
 parser.add_argument('-ml', '--machine_learning', nargs=2, metavar=('TRAINDATA', 'VALDATA'), type=str, default=(None, None), help='Path to traindata and path to validationsdata.\nData gets linked into ./<project>/res/ folder.')
 parser.add_argument('-i', '--gitignore', metavar='LIST', action='append', default=None, type=list, help='List of \'directories\' or \'files\' that should be ignored in git version control.\nOnly possible if -g is used!')
 parser.add_argument('-a', '--author', metavar='NAME', default=None, type=str, help='Name of the author of the project in quotation marks: "Forename ... Surname".')
-parser.add_argument('-s', '--supervisor', metavar='NAME', default='', type=str, help='Name of the supervisor in quotation marks: "Forename ... Surname"..')
+parser.add_argument('-s', '--supervisor', metavar='NAME', default='', type=str, help='Name of the supervisor in quotation marks: "Forename ... Surname".')
 parser.add_argument('-org', '--organization', metavar='NAME', default='', type=str, help='Name of the organization in quotation marks: "...".')
 parser.add_argument('-oid', '--orcid', metavar='ORCID', default='', type=str, help='ORCID of the author of the project. Should look like XXXX-XXXX-XXXX-XXXX')
 parser.add_argument('-tex', '--latex', action='store_true', help='Use this parameter to generate latex files for project work.')

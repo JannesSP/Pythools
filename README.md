@@ -34,18 +34,19 @@ If you dont add a relative or absolute path or you are using git, the project wi
 ## Usage
 <pre>
 usage: createPro.py [-h] (-p PATH_TO_PROJECT/PROJECT_NAME | -g GIT_URL)
-                  [-pd SHORT_DESCRIPTION] [-l PATH] [-ml TRAINDATA VALDATA]
-                  [-i LIST] [-a NAME] [-s NAME] [-org NAME] [-oid ORCID]
-                  [-tex] [-sp] [-v]
+                    [-pd SHORT_DESCRIPTION] [-l PATH] [-ml TRAINDATA VALDATA]
+                    [-i LIST] [-a NAME] [-s NAME] [-org NAME] [-oid ORCID]
+                    [-tex] [-sp] [-v]
 
-createPro.py helps you with Creating your PROject DIRectory with good structure
-for better navigation and reproducibility.
+createPro.py helps you with Creating your PROject DIRectory with good
+structure for better navigation and reproducibility.
 
 optional arguments:
   -h, --help            show this help message and exit
   -p PATH_TO_PROJECT/PROJECT_NAME, --project PATH_TO_PROJECT/PROJECT_NAME
-                        Name of the project you want to create locally. You
-                        can add a path, where the project is created.
+                        Path and Name of the project you want to create
+                        locally. If the path does not exist, it will be
+                        created.
   -g GIT_URL, --git GIT_URL
                         Use this argument if you already made an empty
                         repository and want to add your project to the remote
@@ -53,10 +54,10 @@ optional arguments:
   -pd SHORT_DESCRIPTION, --project_description SHORT_DESCRIPTION
                         Short description about the project.
   -l PATH, --link PATH  Path of the folder of your resources/data. The linked
-                        resources or data can be found in ./&ltproject&gt/res/.
+                        resources or data can be found in ./<project>/res/.
   -ml TRAINDATA VALDATA, --machine_learning TRAINDATA VALDATA
                         Path to traindata and path to validationsdata. Data
-                        gets linked into ./&ltproject&gt/res/ folder.
+                        gets linked into ./<project>/res/ folder.
   -i LIST, --gitignore LIST
                         List of 'directories' or 'files' that should be
                         ignored in git version control. Only possible if -g is
@@ -66,7 +67,7 @@ optional arguments:
                         "Forename ... Surname".
   -s NAME, --supervisor NAME
                         Name of the supervisor in quotation marks: "Forename
-                        ... Surname"..
+                        ... Surname".
   -org NAME, --organization NAME
                         Name of the organization in quotation marks: "...".
   -oid ORCID, --orcid ORCID
@@ -78,7 +79,7 @@ optional arguments:
                         docfile.
   -v, --version         show program's version number and exit
 
-You are currently using version 0.4!
+You are currently using version 0.4.1!
 </pre>
 
 ## Your project directory structure:
