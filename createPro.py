@@ -294,7 +294,7 @@ def parse_args(args):
 
     return parser.parse_args()
 
-version = '0.4.1'
+version = '0.4.2'
 script = __file__
 scriptpath = os.path.dirname(os.path.abspath(script))
 

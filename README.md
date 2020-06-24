@@ -22,8 +22,12 @@ You have the possibility to link your resource data or to use a precreated empty
 If you dont add a relative or absolute path or you are using git, the project will be created in your current working directory.
 
 ## Patch Notes
+*   0.4.2
+    * fixed issue in orcid check
+    * fixed path issue when using git
 *   0.4.1
-    * fixed issue in path creation, now using os.path.join()
+    * fixed issue in path creation
+    * now using os.path.join()
 *   0.4 
     * added latex project documents generation
     * additional information like author, supervisor, organisation, etc can be added
@@ -81,7 +85,7 @@ optional arguments:
                         docfile.
   -v, --version         show program's version number and exit
 
-You are currently using version 0.4.1!
+You are currently using version 0.4.2!
 
 </pre>
 
