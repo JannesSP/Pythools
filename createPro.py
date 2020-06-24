@@ -46,16 +46,16 @@ def writeDirDescription(project_name, *files):
         write('-   out: containing output files, produced by processing/analyzing resources', file)
         write('-   out/plots: containing output plot files and diagrams', file)
 
-def checkOrcID(orcid):
+def isORCID(orcid):
     # splits orcid into digit set
     digitSets = orcid.split('-')
     # check orcid format
     for digSet in digitSets:
-        if not len(digSet) == 4 and bool(re.search(r'^\d{4}$', digSet)):
+        if not len(digSet) == 4 or not bool(re.search(r'^\d{3}(\d|X)$', digSet)):
             return False
 
     # split into base digits and check digit
-    baseDigits = list(map(int, digitSets[0] + digitSets[1] + digitSets[2][:-1]))
+    baseDigits = list(map(int, digitSets[0] + digitSets[1] + digitSets[2] + digitSets[3][:-1]))
     checkDigit = orcid[-1]
 
     # calculating checksum
@@ -68,7 +68,7 @@ def checkOrcID(orcid):
         result = 'X'
 
     # comparing checksum with check digit
-    return str(result) == checkDigit 
+    return str(result) == checkDigit
 
 def linkAllFiles(project_dir, readmemd, walkpath, dst, depth=0):
     files = 0
@@ -173,7 +173,7 @@ def latex(project_name, project_dir, project_description, organization, author, 
     log(f'Created {latexPath}')
 
     # generate main.tex
-    with open('./latex_template.tex', 'r') as tex_template:
+    with open(os.path.join(scriptpath, 'latex_template.tex'), 'r') as tex_template:
         with open(os.path.join(latexPath, 'main.tex'), 'w+') as tex_main:
             for line in tex_template.readlines():
                 tex_main.write(line)
@@ -282,7 +282,7 @@ def parse_args(args):
     parser.add_argument('-pd', '--project_description', metavar='SHORT_DESCRIPTION', default='', type=str, help='Short description about the project.')
     parser.add_argument('-l', '--link', metavar='PATH', type=str, default=None, help='Path of the folder of your resources/data.\nThe linked resources or data can be found in ./<project>/res/.')
     parser.add_argument('-ml', '--machine_learning', nargs=2, metavar=('TRAINDATA', 'VALDATA'), type=str, default=(None, None), help='Path to traindata and path to validationsdata.\nData gets linked into ./<project>/res/ folder.')
-    parser.add_argument('-i', '--gitignore', metavar='LIST', action='append', default=None, type=list, help='List of \'directories\' or \'files\' that should be ignored in git version control.\nOnly possible if -g is used!')
+    parser.add_argument('-i', '--gitignore', metavar='LIST', action='append', default=[], type=list, help='List of \'directories\' or \'files\' that should be ignored in git version control.\nOnly possible if -g is used!')
     parser.add_argument('-a', '--author', metavar='NAME', default=None, type=str, help='Name of the author of the project in quotation marks: "Forename ... Surname".')
     parser.add_argument('-s', '--supervisor', metavar='NAME', default='', type=str, help='Name of the supervisor in quotation marks: "Forename ... Surname".')
     parser.add_argument('-org', '--organization', metavar='NAME', default='', type=str, help='Name of the organization in quotation marks: "...".')
@@ -296,6 +296,7 @@ def parse_args(args):
 
 version = '0.4.1'
 script = __file__
+scriptpath = os.path.dirname(os.path.abspath(script))
 
 def main():
 
@@ -317,11 +318,6 @@ def main():
 
     ### CHECK INPUT
     projectInput = {'local': False, 'git': False}
-
-    # check if orcid syntax and checksum
-    if args.orcid != '':
-        if checkOrcID(orcid):
-            error('ORCID does not match standards!', 5)
 
     if args.author is not None:
         author = args.author
@@ -352,8 +348,19 @@ def main():
     if datalink is not None and (trainlink is not None or vallink is not None):
         error(f'Cannot use --link and --machine_learning together! Please choose only one of them!', 3)
 
-    if args.gitignore is not None and args.git is None:
-        error(f'Can use --gitignore only if --git is used!', 4)
+    if trainlink is not None and not os.path.exists(trainlink):
+        error(f'Cannot find path to training data!', 4)
+
+    if vallink is not None and not os.path.exists(vallink):
+        error(f'Cannot find path to validation data!', 5)
+
+    if len(args.gitignore) > 0 and args.git is None:
+        error(f'Can use --gitignore only if --git is used!', 6)
+
+    # check if orcid syntax and checksum
+    if args.orcid != '':
+        if not isORCID(orcid):
+            error('ORCID does not match standards!', 7)
 
     if projectInput['git']:
         repo = git.Repo.clone_from(giturl, project_dir)
@@ -384,7 +391,7 @@ def main():
         # dont create readmes for out/plots and doc
         if dire != 'out/plots' and dire != 'doc':
             readmes[dire] = os.path.join(project_dir, dire, 'README.md')
-            write(f'<!-- Created markdown file for {os.path.join(dire, "")} on {time} from {author}. -->', readmes[dire])
+            write(f'<!-- Created markdown file for {os.path.join(dire, "")} on {time} from {author} with {script} from https://github.com/JannesSP/sciProTools. -->', readmes[dire])
             log(f'Created {readmes[dire]}')
 
     write(f'res contains the resource data the way you like, either the hard links to your resource data or the actual resource data files.', readmes['res'])
@@ -415,7 +422,11 @@ def main():
 
     # add files to commit for git
     if projectInput['git']:
-        files = list(readmes.values())
+        files = []
+        for file in readmes.values():
+            files.append(file.split(os.path.join(project_dir, ''))[1])
+        # files = list(readmes.values())
+        print(files)
         repo.index.add(files)
         repo.index.commit(f'initial commit of {project_name} with {script} {version}')
         log(f'Added {len(files)} files to git commit.')
