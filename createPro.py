@@ -13,6 +13,9 @@ import socket
 import platform
 import psutil
 import GPUtil
+import urllib.request
+from urllib.error import HTTPError
+from urllib.error import URLError
 from pathlib import Path
 from datetime import datetime
 
@@ -167,7 +170,65 @@ def getSpecs():
             diskstring +
             gpustring)
 
-def latex(project_name, project_dir, project_description, organization, author, orcid, supervisor):
+def parseDoiToBib(doiFile, useLatex):
+    PREFIX_DX = 'http://dx.doi.org/'
+    PREFIX = 'http://doi.org/'
+    bibList = []
+    doiList = []
+
+    with open(doiFile, 'r') as dois:
+
+        for doi in dois.readlines():
+            log(f'Try to parse {doi}                                  ')
+            doi = doi.split('\n')[0]
+            if doi.startswith('doi:'):
+                doi = doi.split('doi:')[1]
+
+            if bool(re.search(r'\b(10[.][0-9]{4,}(?:[.][0-9]+)*\/(?:(?!["&\'<>])\S)+)\b', doi)):
+                doiList.append(doi)
+
+                if useLatex:
+                    if doi.startswith('http://doi.org/') or doi.startswith('https://dx.doi.org/'):
+                        doiURL = doi
+                    else:
+                        doiURL = PREFIX + doi
+
+                    # Sometimes url doesnt load - retry at maximum 50 times
+                    for i in range(1, 21):
+                        req = urllib.request.Request(doiURL)
+                        req.add_header('Accept', 'application/x-bibtex')
+
+                        try:
+                            with urllib.request.urlopen(req) as f:
+                                bibtex = f.read().decode()
+                            bibList.append(bibtex)
+                            log(f'Successfully parsed {doi} after {i} tries                  ')
+                            break
+
+                        except HTTPError as e:
+                            if e.code == 404:
+                                error(f'Error in parsing doi list {doiFile} to bib list!\n{doi} could not be found!', 9)
+                            else:
+                                sys.stderr.write(f'    Service for {doi} unavailable! Retry {i}             \r')
+                        except:
+                            sys.stderr.write(f'    Unknown error in {doi}! Retry {i}             \r')
+
+                        if 'dx.doi.org' in doiURL:
+                            doiURL = PREFIX + doi
+                            continue
+                        else:
+                            doiURL = PREFIX_DX + doi
+                            continue
+                        log(f'WARNING: Could not parse {doi}!                 ')
+                        warnings += 1
+
+
+                else:
+                    log(f'  WARNING: Error in parsing doi list {doiFile} to bib list!\n{doi} does not match the doi syntax!')
+
+    return (bibList, doiList)
+
+def latex(project_name, project_dir, project_description, organization, author, orcid, supervisor, bibList):
     log('Create latex files.')
     latexPath = os.path.join(project_dir, 'doc')
     log(f'Created {latexPath}')
@@ -257,9 +318,10 @@ def latex(project_name, project_dir, project_description, organization, author, 
 
     # generate citations
     with open(os.path.join(latexPath, 'citations.bib'), 'w+') as tex_bib:
-        tex_bib.write('% Encoding: UTF-8\n' +
-                      '\n' +
-                      '% TODO: Add your references here.')
+        tex_bib.write('% Encoding: UTF-8\n')
+        for bibentry in bibList:
+            tex_bib.write(bibentry + '\n')
+        tex_bib.write('\n% TODO: Add your references here.')
     tex_bib.close()
     log(f'Created {os.path.join(latexPath, "citations.bib")}')
 
@@ -289,14 +351,16 @@ def parse_args(args):
     parser.add_argument('-oid', '--orcid', metavar='ORCID', default='', type=str, help='ORCID of the author of the project. Should look like XXXX-XXXX-XXXX-XXXX.')
     parser.add_argument('-tex', '--latex', action='store_true', default=False, help='Use this parameter to generate latex files for project work.')
     parser.add_argument('-sp','--specs', action='store_true', default=False, help='Use this parameter to generate hardware specs in your docfile.')
+    parser.add_argument('-d', '--doi', metavar='DOI_FILE.txt', default=None, type=str, help='File containing all DOIs you want to use as references in the README.md and latex bib file.')
         
     parser.add_argument('-v', '--version', action='version', version=f'\n%(prog)s {version}')
 
     return parser.parse_args()
 
-version = '0.4.2'
+version = '0.5'
 script = __file__
 scriptpath = os.path.dirname(os.path.abspath(script))
+warnings = 0
 
 def main():
 
@@ -335,6 +399,15 @@ def main():
         git_service = giturl.split('/')[-3]
         projectInput['git'] = True
         log(f'Using git {giturl} for version control!')
+
+    bibList = []
+    doiList = []
+    if args.doi is not None:
+        if os.path.isfile(args.doi):
+            log(f'Start parsing {args.doi}')
+            bibList, doiList = parseDoiToBib(args.doi, activeParams['latex'])
+        else:
+            error(f'List of DOIs {args.doi} is not a file!', 8)
 
     ### CREATE PROJECT DIRECTORY
 
@@ -418,7 +491,8 @@ def main():
               organization=organization,
               author=author,
               orcid=orcid,
-              supervisor=supervisor)
+              supervisor=supervisor,
+              bibList=bibList)
 
     # add files to commit for git
     if projectInput['git']:
@@ -458,7 +532,7 @@ def main():
         log(f'Created {os.path.join(project_dir, "res" , "traindata")}')
         os.makedirs(os.path.join(project_dir, 'res', 'valdata'))
         log(f'Created {os.path.join(project_dir, "res", "valdata")}')
-        write('\n# Data to be analyzed:', readmemd)
+        write('# Data to be analyzed:', readmemd)
         
         if trainlink is not None:
             write(f'Resources/Data linked from<br>\n{os.path.abspath(trainlink)}<br>', readmemd)
@@ -489,8 +563,12 @@ def main():
         repo.remote("origin").push()
         log(f'Pushed files to {giturl}.')
 
-    write(f'# Protocol\n## {time.split(" ")[0]}', readmemd)
+    write(f'# References', readmemd)
+    for doi in doiList:
+        write(f'-   [{doi}](http://doi.org/{doi})', readmemd)
+    
+    write(f'\n# Protocol\n## {time.split(" ")[0]}', readmemd)
     log(f'Created {readmemd} and {readmesh}')
-    log('Done')
+    log(f'Exit {script} with {warnings} WARNINGS')
 
 main()
