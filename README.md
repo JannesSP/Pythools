@@ -39,7 +39,7 @@ If you dont add a relative or absolute path or you are using git, the project wi
     * connect your newly generated project to a precreated empty remote git repository like github
 
 ## Usage
-```sh
+```
 usage: createPro.py [-h] (-p PATH_TO_PROJECT/PROJECT_NAME | -g GIT_URL)
                     [-pd SHORT_DESCRIPTION] [-l PATH] [-ml TRAINDATA VALDATA]
                     [-i LIST] [-a NAME] [-s NAME] [-org NAME] [-oid ORCID]
