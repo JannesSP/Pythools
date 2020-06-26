@@ -21,6 +21,11 @@ from datetime import datetime
 
 ### FUNCTIONS
 
+version = '0.5'
+script = __file__
+scriptpath = os.path.dirname(os.path.abspath(script))
+warnings = 0
+
 def error(string, error_type=1):
     sys.stderr.write(f'ERROR: {string}\n')
     sys.exit(error_type)
@@ -175,12 +180,12 @@ def parseDoiToBib(doiFile, useLatex):
     PREFIX = 'http://doi.org/'
     bibList = []
     doiList = []
+    global warnings
 
     with open(doiFile, 'r') as dois:
-
         for doi in dois.readlines():
-            log(f'Try to parse {doi}                                  ')
             doi = doi.split('\n')[0]
+            log(f'Try to parse {doi}')
             if doi.startswith('doi:'):
                 doi = doi.split('doi:')[1]
 
@@ -202,16 +207,16 @@ def parseDoiToBib(doiFile, useLatex):
                             with urllib.request.urlopen(req) as f:
                                 bibtex = f.read().decode()
                             bibList.append(bibtex)
-                            log(f'Successfully parsed {doi} after {i} tries                  ')
+                            log(f'Successfully parsed {doi} after {i} tries')
                             break
 
                         except HTTPError as e:
                             if e.code == 404:
                                 error(f'Error in parsing doi list {doiFile} to bib list!\n{doi} could not be found!', 9)
                             else:
-                                sys.stderr.write(f'    Service for {doi} unavailable! Retry {i}             \r')
+                                sys.stderr.write(f'\tService for {doi} unavailable! Retry {i}             \r')
                         except:
-                            sys.stderr.write(f'    Unknown error in {doi}! Retry {i}             \r')
+                            sys.stderr.write(f'\tUnknown error in {doi}! Retry {i}             \r')
 
                         if 'dx.doi.org' in doiURL:
                             doiURL = PREFIX + doi
@@ -219,12 +224,12 @@ def parseDoiToBib(doiFile, useLatex):
                         else:
                             doiURL = PREFIX_DX + doi
                             continue
-                        log(f'WARNING: Could not parse {doi}!                 ')
+                        log(f'\tWARNING: Could not parse {doi}!                 ')
                         warnings += 1
 
-
-                else:
-                    log(f'  WARNING: Error in parsing doi list {doiFile} to bib list!\n{doi} does not match the doi syntax!')
+            else:
+                warnings += 1
+                log(f'\tWARNING: Error in parsing doi list {doiFile} to bib list!\n\t{doi} does not match the doi syntax!')
 
     return (bibList, doiList)
 
@@ -356,11 +361,6 @@ def parse_args(args):
     parser.add_argument('-v', '--version', action='version', version=f'\n%(prog)s {version}')
 
     return parser.parse_args()
-
-version = '0.5'
-script = __file__
-scriptpath = os.path.dirname(os.path.abspath(script))
-warnings = 0
 
 def main():
 
