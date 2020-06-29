@@ -21,9 +21,9 @@ from datetime import datetime
 
 ### FUNCTIONS
 
-version = '0.5'
-script = __file__
-scriptpath = os.path.dirname(os.path.abspath(script))
+VERSION = '0.5'
+SCRIPT = __file__
+SCRIPTPATH = os.path.dirname(os.path.abspath(SCRIPT))
 warnings = 0
 
 def error(string, error_type=1):
@@ -239,7 +239,7 @@ def latex(project_name, project_dir, project_description, organization, author, 
     log(f'Created {latexPath}')
 
     # generate main.tex
-    with open(os.path.join(scriptpath, 'latex_template.tex'), 'r') as tex_template:
+    with open(os.path.join(SCRIPTPATH, 'latex_template.tex'), 'r') as tex_template:
         with open(os.path.join(latexPath, 'main.tex'), 'w+') as tex_main:
             for line in tex_template.readlines():
                 tex_main.write(line)
@@ -335,9 +335,9 @@ def latex(project_name, project_dir, project_description, organization, author, 
 def parse_args(args):
 
     parser = ap.ArgumentParser(
-        description=f'{script} helps you with Creating your PROject DIRectory with good structure for better navigation and reproducibility.',
+        description=f'{SCRIPT} helps you with Creating your PROject DIRectory with good structure for better navigation and reproducibility.',
         formatter_class=ap.HelpFormatter,
-        epilog=f'You are currently using {script} version {version}!'
+        epilog=f'You are currently using {SCRIPT} version {VERSION}!'
     )
 
     # required arguments
@@ -352,19 +352,19 @@ def parse_args(args):
     parser.add_argument('-i', '--gitignore', metavar='LIST', action='append', default=[], type=list, help='List of \'directories\' or \'files\' that should be ignored in git version control.\nOnly possible in combination with -g/--git!')
     parser.add_argument('-a', '--author', metavar='NAME', default=None, type=str, help='Name of the author of the project in quotation marks: "Forename ... Surname".')
     parser.add_argument('-s', '--supervisor', metavar='NAME', default='', type=str, help='Name of the supervisor in quotation marks: "Forename ... Surname".')
-    parser.add_argument('-org', '--organization', metavar='NAME', default='', type=str, help='Name of the organization in quotation marks: "...".')
+    parser.add_argument('-org', '--organization', metavar='STRING', default='', type=str, help='Name of the organization in quotation marks: "...".')
     parser.add_argument('-oid', '--orcid', metavar='ORCID', default='', type=str, help='ORCID of the author of the project. Should look like XXXX-XXXX-XXXX-XXXX.')
     parser.add_argument('-tex', '--latex', action='store_true', default=False, help='Use this parameter to generate latex files for project work.')
     parser.add_argument('-sp','--specs', action='store_true', default=False, help='Use this parameter to generate hardware specs in your docfile.')
-    parser.add_argument('-d', '--doi', metavar='DOI_FILE.txt', default=None, type=str, help='File containing all DOIs you want to use as references in the README.md and latex bib file.')
+    parser.add_argument('-d', '--doi', metavar='DOI_FILE.txt', default=None, type=str, help='File containing all DOIs you want to use as references in the README.md and latex bib file. Only one DOI per line!')
         
-    parser.add_argument('-v', '--version', action='version', version=f'\n%(prog)s {version}')
+    parser.add_argument('-v', '--version', action='version', version=f'\n%(prog)s {VERSION}')
 
     return parser.parse_args()
 
 def main():
 
-    log(f'STARTING {script}')
+    log(f'STARTING {SCRIPT}')
 
     args = parse_args(sys.argv[1:])
 
@@ -464,14 +464,14 @@ def main():
         # dont create readmes for out/plots and doc
         if dire != 'out/plots' and dire != 'doc':
             readmes[dire] = os.path.join(project_dir, dire, 'README.md')
-            write(f'<!-- Created markdown file for {os.path.join(dire, "")} on {time} from {author} with {script} from https://github.com/JannesSP/sciProTools. -->', readmes[dire])
+            write(f'<!-- Created markdown file for {os.path.join(dire, "")} on {time} from {author} with {SCRIPT} from https://github.com/JannesSP/sciProTools. -->', readmes[dire])
             log(f'Created {readmes[dire]}')
 
     write(f'res contains the resource data the way you like, either the hard links to your resource data or the actual resource data files.', readmes['res'])
 
     ### CREATE PROJECT FILES
 
-    command = f'{script} '
+    command = f'{SCRIPT} '
     for arg in sys.argv[1:]:
         if arg.startswith('-'):
             command += f'{arg} '
@@ -480,7 +480,7 @@ def main():
 
     # writing major readme file
     write(f'# Project \'{project_name}\' created on {time} from {author}.', readmemd, readmesh)
-    write(f'# with {script} version {version}.', readmesh)
+    write(f'# with {SCRIPT} version {VERSION}.', readmesh)
     write(f'# Used the following command in {os.getcwd()}', readmesh)
     write(command, readmesh)
 
@@ -502,14 +502,14 @@ def main():
         # files = list(readmes.values())
         print(files)
         repo.index.add(files)
-        repo.index.commit(f'initial commit of {project_name} with {script} {version}')
+        repo.index.commit(f'initial commit of {project_name} with {SCRIPT} {VERSION}')
         log(f'Added {len(files)} files to git commit.')
 
     if projectInput['git']:
         write(f'# Using git {giturl} for version control on account {git_user_name} on {git_service}.', readmesh)
         write(f'-    Using git {giturl} for version control on account {git_user_name} on {git_service}.', readmemd)
 
-    write(f'-    Created with {script} version {version} from https://github.com/JannesSP/sciProTools.', readmemd)
+    write(f'-    Created with {SCRIPT} version {VERSION} from https://github.com/JannesSP/sciProTools.', readmemd)
     write(f'<pre>\n{command}\n</pre>', readmemd)
 
     if orcid != '':
@@ -569,6 +569,6 @@ def main():
     
     write(f'\n# Protocol\n## {time.split(" ")[0]}', readmemd)
     log(f'Created {readmemd} and {readmesh}')
-    log(f'Exit {script} with {warnings} WARNINGS')
+    log(f'Exit {SCRIPT} with {warnings} WARNINGS')
 
 main()
