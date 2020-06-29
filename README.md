@@ -95,6 +95,11 @@ Click on the picture to see some other example pictures.
 plindocs searches a given directory for plots and figures to be inserted into your documentation file.
 Accepted plot formats are .png, .jpg, .jpeg and .eps.
 
+## Patch Notes
+*   0.1
+    *   plots can be included in README.md and attachments.tex of a sciProTools project
+
+## Examples
 ```sh
 # Include plots from plot_dir into markown README.md of path_to_project
 python3 plindocs.py -pl path_to_project -pr plot_dir -m
