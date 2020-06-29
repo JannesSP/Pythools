@@ -40,7 +40,7 @@ If you dont add a relative or absolute path or you are using git, the project wi
 
 ## Usage
 
-To get the usage page, execute ```python3 createPro.py -h```
+To see the usage page, execute ```python3 createPro.py -h```
 
 ## Your project directory structure:
 -   src: containing project scripts
@@ -107,3 +107,7 @@ python3 plindocs.py -pl path_to_project -pr plot_dir -m
 # Include plots from plot_dir into attachment.tex file of path_to_project
 python3 plindocs.py -pl path_to_project -pr plot_dir -t
 ```
+
+## Usage
+
+To see the usage page, execute ```python3 plindocs.py -h```
