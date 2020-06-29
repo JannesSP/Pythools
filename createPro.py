@@ -337,11 +337,11 @@ def parse_args(args):
     parser = ap.ArgumentParser(
         description=f'{script} helps you with Creating your PROject DIRectory with good structure for better navigation and reproducibility.',
         formatter_class=ap.HelpFormatter,
-        epilog=f'You are currently using version {version}!'
+        epilog=f'You are currently using {script} version {version}!'
     )
 
     # required arguments
-    projectgroup = parser.add_mutually_exclusive_group(required=True, )
+    projectgroup = parser.add_mutually_exclusive_group(required=True)
     projectgroup.add_argument('-p', '--project', metavar='PATH_TO_PROJECT/PROJECT_NAME', default=None, type=str, help='Path and Name of the project you want to create locally. If the path does not exist, it will be created.')
     projectgroup.add_argument('-g', '--git', metavar='GIT_URL', type=str, default=None, help='Use this argument if you already made an empty repository and want to add your project to the remote repository.')
 

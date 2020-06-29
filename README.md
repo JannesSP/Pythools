@@ -15,7 +15,7 @@ Bioinformatics student at Friedrich-Schiller-University in Jena Germany<br>
 *   [GPUtil](https://github.com/anderskm/gputil)
     *   [Download on Conda](https://anaconda.org/conda-forge/gputil)
 
-## createPro
+# createPro
 createPro can be used to create your project directory structure for better navigation and reproducibility in your projects.
 This way uniformity is insured throughout all your projects.
 You have the possibility to link your resource data or to use a precreated empty git remote repository to add a version control to your project.
@@ -39,58 +39,9 @@ If you dont add a relative or absolute path or you are using git, the project wi
     * connect your newly generated project to a precreated empty remote git repository like github
 
 ## Usage
-```
-usage: createPro.py [-h] (-p PATH_TO_PROJECT/PROJECT_NAME | -g GIT_URL)
-                    [-pd SHORT_DESCRIPTION] [-l PATH] [-ml TRAINDATA VALDATA]
-                    [-i LIST] [-a NAME] [-s NAME] [-org NAME] [-oid ORCID]
-                    [-tex] [-sp] [-d DOI_FILE.txt] [-v]
 
-createPro.py helps you with Creating your PROject DIRectory with good
-structure for better navigation and reproducibility.
+To get the usage page, execute ```python3 createPro.py -h```
 
-optional arguments:
-  -h, --help            show this help message and exit
-  -p PATH_TO_PROJECT/PROJECT_NAME, --project PATH_TO_PROJECT/PROJECT_NAME
-                        Path and Name of the project you want to create
-                        locally. If the path does not exist, it will be
-                        created.
-  -g GIT_URL, --git GIT_URL
-                        Use this argument if you already made an empty
-                        repository and want to add your project to the remote
-                        repository.
-  -pd SHORT_DESCRIPTION, --project_description SHORT_DESCRIPTION
-                        Short description about the project.
-  -l PATH, --link PATH  Path of the folder of your resources/data. The linked
-                        resources or data can be found in ./<project>/res/.
-  -ml TRAINDATA VALDATA, --machine_learning TRAINDATA VALDATA
-                        Path to traindata and path to validationsdata. Data
-                        gets linked into ./<project>/res/ folder.
-  -i LIST, --gitignore LIST
-                        List of 'directories' or 'files' that should be
-                        ignored in git version control. Only possible in
-                        combination with -g/--git!
-  -a NAME, --author NAME
-                        Name of the author of the project in quotation marks:
-                        "Forename ... Surname".
-  -s NAME, --supervisor NAME
-                        Name of the supervisor in quotation marks: "Forename
-                        ... Surname".
-  -org NAME, --organization NAME
-                        Name of the organization in quotation marks: "...".
-  -oid ORCID, --orcid ORCID
-                        ORCID of the author of the project. Should look like
-                        XXXX-XXXX-XXXX-XXXX.
-  -tex, --latex         Use this parameter to generate latex files for project
-                        work.
-  -sp, --specs          Use this parameter to generate hardware specs in your
-                        docfile.
-  -d DOI_FILE.txt, --doi DOI_FILE.txt
-                        File containing all DOIs you want to use as references
-                        in the README.md and latex bib file.
-  -v, --version         show program's version number and exit
-
-You are currently using version 0.5!
-```
 ## Your project directory structure:
 -   src: containing project scripts
 -   res: containing project resources and data
@@ -133,3 +84,6 @@ Click on the picture to see some other example pictures.
 [![latex title page](./img/titlepage.png)](./img/)
 
 [![latex toc](./img/toc.png)](./img/)
+
+# plindocs (to be implemented)
+plindocs searches a given directory for plots and figures to be inserted into your documentation file.
