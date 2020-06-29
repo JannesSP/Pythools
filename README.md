@@ -58,17 +58,23 @@ To get the usage page, execute ```python3 createPro.py -h```
 
 ```sh
 # Using precreated empty github repository, hard link resource data (only accessible locally) and add gitignore paths
-python3 prodir.py -g https://github.com/JannesSP/ml_project -ml ml_data/traindata ml_data/valdata -i 'res/*' -i '!res/README.md' -i '.gitignore'
-# results: https://github.com/JannesSP/ml_project
+python3 createPro.py -g git_link -ml ml_data/traindata ml_data/valdata -i 'res/*' -i '!res/README.md' -i '.gitignore'
 
 # Create project locally and hard link resource data
-python3 prodir.py -p ./link_project -l link_data/
+python3 createPro.py -p ./link_project -l link_data/
 
 # Create project for machine learnling
-python3 prodir.py -p ./ml_project -ml ml_data/traindata ml_data/valdata
+python3 createPro.py -p ./ml_project -ml ml_data/traindata ml_data/valdata
 
-# Create project with latex
-python3 prodir.py -p ./link_project -l link_data/ -tex --author 'Jannes Spangenberg' --supervisor 'Jannes Spangenberg' -org 'Friedrich-Schiler-University' -pd 'This is a test project'
+# Create project and latex template
+python3 createPro.py -p ./link_project -l link_data/ -tex --author 'Name' --supervisor 'Name' -org 'University' -pd 'This is a test project'
+
+# Create project, latex template and add doi list as references
+# references will be included in latex citations.bib and README.md als reference list
+python3 createPro.py -p ./link_project -l link_data/ -tex --author 'Name' --supervisor 'Name' -org 'University' -pd 'This is a test project' -d DOI_FILE.txt
+
+# add ORCID
+python3 createPro.py -p ./link_project -l link_data/ -tex --author 'Name' --supervisor 'Name' -org 'University' -pd 'This is a test project' -oid XXXX-XXXX-XXXX-XXXX
 ```
 ## Pictures
 Click on the picture to see some other example pictures.
@@ -85,5 +91,14 @@ Click on the picture to see some other example pictures.
 
 [![latex toc](./img/toc.png)](./img/)
 
-# plindocs (to be implemented)
+# plindocs
 plindocs searches a given directory for plots and figures to be inserted into your documentation file.
+Accepted plot formats are .png, .jpg, .jpeg and .eps.
+
+```sh
+# Include plots from plot_dir into markown README.md of path_to_project
+python3 plindocs.py -pl path_to_project -pr plot_dir -m
+
+# Include plots from plot_dir into attachment.tex file of path_to_project
+python3 plindocs.py -pl path_to_project -pr plot_dir -t
+```
