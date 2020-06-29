@@ -79,13 +79,13 @@ python3 createPro.py -p ./link_project -l link_data/ -tex --author 'Name' --supe
 ## Pictures
 Click on the picture to see some other example pictures.
 
-### Information that will be prepared in your README.md
+### README.md that will be created
 
 [![Readme project description](./img/readme_1.png)](./img/)
 
 [![Readme data overview](./img/readme_2.png)](./img/)
 
-### Thumbnail of the pdf from the prepared latex scripts 
+### Pdf from the created latex template 
 
 [![latex title page](./img/titlepage.png)](./img/)
 
