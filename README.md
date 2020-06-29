@@ -1,8 +1,8 @@
 [![GitHub Downloads](https://img.shields.io/github/downloads/JannesSP/sciProTools/total?label=download&logo=github&style=social)](https://github.com/JannesSP/sciProTools)
 
-# sciProTools
+# sciProTools 0.1
 SCIence PROject TOOLS contains usefule python scripts for everyday science projects.
-```Created with Python 3.8.2```
+```Created with Python 3.7.7```
 
 # Creator
 Jannes Spangenberg<br>
@@ -15,7 +15,7 @@ Bioinformatics student at Friedrich-Schiller-University in Jena Germany<br>
 *   [GPUtil](https://github.com/anderskm/gputil)
     *   [Download on Conda](https://anaconda.org/conda-forge/gputil)
 
-# createPro
+# createPro 0.5
 createPro can be used to create your project directory structure for better navigation and reproducibility in your projects.
 This way uniformity is insured throughout all your projects.
 You have the possibility to link your resource data or to use a precreated empty git remote repository to add a version control to your project.
@@ -95,7 +95,7 @@ Click on the picture to see some other example pictures.
 plindocs searches a given directory for plots and figures to be inserted into your documentation file.
 Accepted plot formats are .png, .jpg, .jpeg and .eps.
 
-## Patch Notes
+## Patch Notes 0.1
 *   0.1
     *   plots can be included in README.md and attachments.tex of a sciProTools project
 
